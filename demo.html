@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SprayClarity — Demo interactiva</title>
+<meta property="og:title" content="SprayClarity — Probá la app en 1 minuto 💧">
+<meta property="og:description" content="¿Aplico hoy o espero? Demo interactiva: veredicto por hora, 5 métodos, umbrales a tu equipo y reporte para WhatsApp. Gratis · ES/EN/PT.">
+<meta property="og:image" content="https://dagri7048-pixel.github.io/sprayclarity-legal/demo-og.png">
+<meta property="og:url" content="https://dagri7048-pixel.github.io/sprayclarity-legal/demo.html">
+<meta property="og:type" content="website">
+<meta name="description" content="Demo interactiva de SprayClarity: la app que responde ¿aplico hoy o espero? con un veredicto claro por hora.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A7%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<style>
+  :root{
+    --pg:#EFF3EE; --pg2:#E3EAE2; --ink:#16241C; --ink2:#54685B; --acc:#2E8F55; --rail-line:#CBD8CC;
+    --paper:#0E1A14; --card:#16241C; --card2:#1B2C22; --aink:#EAF1E8; --soft:#8CA091; --dim:#93A89A;
+    --line:rgba(255,255,255,.10); --go:#34C76A; --cau:#E6A92B; --no:#E2533B; --sky:#4FA8C4; --day:#F4D58A; --na:#6E8378;
+  }
+  @media (prefers-color-scheme: dark){ :root{ --pg:#0A130E; --pg2:#0F1B13; --ink:#EAF1E8; --ink2:#8CA091; --rail-line:#22352A; } }
+  :root[data-theme="dark"]{ --pg:#0A130E; --pg2:#0F1B13; --ink:#EAF1E8; --ink2:#8CA091; --rail-line:#22352A; }
+  :root[data-theme="light"]{ --pg:#EFF3EE; --pg2:#E3EAE2; --ink:#16241C; --ink2:#54685B; --rail-line:#CBD8CC; }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--pg)}
+  body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+  .mono{font-family:ui-monospace,'Cascadia Mono',Consolas,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+  .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:56px;padding:28px 16px 120px;background:radial-gradient(90% 60% at 50% 0%,var(--pg2) 0%,var(--pg) 70%)}
+  .rail{display:none;max-width:330px}
+  @media(min-width:1000px){ .rail{display:block} .stage{padding-bottom:28px} }
+  .rail .brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .rail .drop{width:40px;height:40px;border-radius:13px;background:linear-gradient(160deg,#2E8F55,#1C5A36);display:grid;place-items:center;color:#fff;font-size:20px}
+  .rail h1{font-size:26px;font-weight:800;letter-spacing:-.3px}
+  .rail .tag{color:var(--ink2);font-size:14px;margin-bottom:22px;line-height:1.5}
+  .rail ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+  .rail li{display:flex;gap:10px;font-size:14px;line-height:1.45;align-items:flex-start}
+  .rail li b{font-weight:650}
+  .rail .ic{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--pg2);border:1px solid var(--rail-line);display:grid;place-items:center;font-size:13px}
+  .rail .cta{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#fff;font-weight:700;font-size:14px;padding:11px 18px;border-radius:11px}
+  .rail .fine{margin-top:14px;font-size:11.5px;color:var(--ink2)}
+
+  /* ---------- Phone ---------- */
+  .pwrap{position:relative}
+  .phone{position:relative;width:min(392px,calc(100vw - 20px));height:min(800px,calc(100vh - 150px));min-height:560px;background:#050B07;border-radius:44px;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.06) inset}
+  .bezel{position:relative;width:100%;height:100%;border-radius:35px;overflow:hidden;background:radial-gradient(120% 70% at 50% 0%,#16271D 0%,#0E1A14 50%,#0A130E 100%);color:var(--aink)}
+  .punch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:84px;height:22px;background:#050B07;border-radius:12px;z-index:40}
+  .sbar{position:relative;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:12px 20px 4px;font-size:12.5px;font-weight:600;color:var(--soft)}
+  .sbar .demo{position:absolute;left:50%;transform:translateX(-50%);top:38px;background:rgba(79,168,196,.16);border:1px solid rgba(79,168,196,.5);color:#9FD3E4;font-size:9.5px;font-weight:800;letter-spacing:1.5px;padding:2px 9px;border-radius:99px}
+  .screen{position:absolute;inset:44px 0 0 0;overflow-y:auto;padding:26px 14px 90px;scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ .screen{scroll-behavior:auto} *{animation:none!important;transition:none!important} }
+
+  .apphead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .apphead .lg{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:-.2px}
+  .apphead .dropm{width:26px;height:26px;border-radius:9px;background:linear-gradient(160deg,#2E8F55,#1C5A36);display:grid;place-items:center;font-size:13px}
+  .gear{width:34px;height:30px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--soft);display:grid;place-items:center;font-size:14px}
+  .loterow{display:flex;gap:8px;margin-bottom:12px}
+  .lote{flex:1;display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:8px 11px;font-size:12.5px;color:var(--aink);font-weight:600}
+  .lote small{color:var(--dim);font-weight:500}
+
+  .methods{display:flex;gap:6px;margin-bottom:14px}
+  .mi{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 2px 7px;font-size:9.5px;color:var(--soft);font-weight:600;transition:border-color .15s, background .15s}
+  .mi .em{font-size:17px}
+  .mi.on{background:var(--card2);border-color:var(--go);color:var(--aink)}
+
+  .hero{border-radius:18px;padding:16px 15px 14px;margin-bottom:12px;border:1px solid var(--line);background:linear-gradient(165deg,var(--card2),var(--card))}
+  .hero .eyebrow{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+  .vrow{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+  .vdot{width:46px;height:46px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 6px rgba(255,255,255,.05)}
+  .vlabel{font-size:24px;font-weight:800;letter-spacing:-.4px;line-height:1.05}
+  .vhour{font-size:11.5px;color:var(--dim);font-weight:600;margin-top:3px}
+  .reasons{font-size:12.5px;color:var(--soft);line-height:1.45;margin-bottom:10px;min-height:18px}
+  .nextwin{display:inline-flex;align-items:center;gap:7px;background:rgba(52,199,106,.12);border:1px solid rgba(52,199,106,.4);color:#9FE0B8;border-radius:99px;padding:5px 11px;font-size:11.5px;font-weight:700}
+  .readings{display:flex;gap:8px;margin-bottom:12px}
+  .rd{flex:1;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 10px}
+  .rd .k{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--soft);margin-bottom:3px}
+  .rd .v{font-size:16px;font-weight:800}
+  .rd .v small{font-size:10px;color:var(--dim);font-weight:600}
+
+  .chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:14px}
+  .fc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 9px}
+  .fc .h{display:flex;justify-content:space-between;align-items:center;font-size:9.5px;font-weight:700;color:var(--soft);letter-spacing:.4px;margin-bottom:3px}
+  .fdot{width:8px;height:8px;border-radius:50%}
+  .fc .v{font-size:13.5px;font-weight:800}
+  .fc .v small{font-size:9px;color:var(--dim)}
+  .fc .s{font-size:9px;color:var(--dim);margin-top:1px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 13px 11px;margin-bottom:12px}
+  .card .ttl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .card .ttl b{font-size:13px;font-weight:800}
+  .card .ttl span{font-size:10px;color:var(--dim)}
+  .tl{display:flex;gap:2.5px;align-items:flex-end;height:74px;margin-bottom:6px}
+  .bar{flex:1;border-radius:3px 3px 0 0;position:relative;opacity:.95;transition:transform .12s}
+  .bar.sel{outline:2px solid #fff;outline-offset:1px}
+  .tlx{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:7px}
+  .windline{font-size:10.5px;color:var(--soft)}
+  .days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+  .day{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:7px 11px;font-size:10px;color:var(--soft);font-weight:700}
+  .day .dd{display:flex;gap:2px}
+  .day .dd i{width:6px;height:6px;border-radius:50%}
+  .day.on{border-color:var(--go);color:var(--aink)}
+  .day .pro{font-size:7.5px;letter-spacing:.8px;color:var(--day)}
+
+  .acts{display:flex;gap:8px;margin-bottom:12px}
+  .act{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;padding:11px 4px;font-size:11.5px;font-weight:800;border:1px solid var(--line);background:var(--card);color:var(--aink)}
+  .act.pri{background:var(--go);border-color:var(--go);color:#06140C}
+  .mapc{position:relative;height:104px;border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;background:
+    radial-gradient(60% 90% at 20% 30%, #24451F 0%, transparent 60%),
+    radial-gradient(50% 70% at 75% 25%, #3A5A28 0%, transparent 55%),
+    radial-gradient(70% 80% at 60% 80%, #2C4A22 0%, transparent 60%),
+    linear-gradient(140deg,#1E3A1A,#293F1C 45%,#1C331A)}
+  .mapc:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,26,20,.55),transparent 55%)}
+  .mapc .pin{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);font-size:22px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));z-index:2}
+  .mapc .cap{position:absolute;left:12px;bottom:9px;z-index:2;font-size:11px;font-weight:700;color:#DFEDD9}
+  .legalline{font-size:9.5px;color:var(--na);text-align:center;line-height:1.5;padding:0 10px}
+
+  /* sheets & overlays inside phone */
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:60;background:var(--card2);border-radius:22px 22px 0 0;border-top:1.5px solid var(--line);padding:16px 16px 22px;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.25,1);max-height:78%;overflow-y:auto}
+  .sheet.open{transform:translateY(0)}
+  .sheet .grab{width:38px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 13px}
+  .sheet h3{font-size:14.5px;font-weight:800;margin-bottom:3px}
+  .sheet .sub{font-size:11px;color:var(--dim);margin-bottom:13px}
+  .fxrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  .fx{border:1px solid var(--line);background:var(--card);color:var(--soft);font-size:11px;font-weight:700;border-radius:99px;padding:7px 12px;transition:all .12s}
+  .fx.on{background:rgba(52,199,106,.14);border-color:var(--go);color:#9FE0B8}
+  .thr{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-top:1px solid var(--line);font-size:12px}
+  .thr b{font-weight:700;color:var(--aink)}
+  .thr .mono{color:var(--soft)}
+  .pill{display:inline-block;background:rgba(244,213,138,.14);border:1px solid rgba(244,213,138,.45);color:var(--day);font-size:8.5px;font-weight:800;letter-spacing:1px;border-radius:99px;padding:2px 7px;vertical-align:2px}
+  .scrim{position:absolute;inset:0;background:rgba(4,10,7,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:55}
+  .scrim.on{opacity:1;pointer-events:auto}
+
+  .sharecard{background:linear-gradient(165deg,#20402C,#12241A);border:1px solid #3E6B4F;border-radius:14px;padding:12px;margin-bottom:12px}
+  .sharecard .h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;margin-bottom:8px}
+  .sharecard table{width:100%;border-collapse:collapse;font-size:8.6px}
+  .sharecard th{color:#8CA091;font-weight:700;text-align:left;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.12);letter-spacing:.4px}
+  .sharecard td{padding:3.5px 4px;border-bottom:1px solid rgba(255,255,255,.05);color:#D8E4DB}
+  .sharecard .dt{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .sharefoot{font-size:8.5px;color:#8CA091;margin-top:7px;line-height:1.5}
+  .wa{display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#07300F;font-weight:800;font-size:12.5px;border-radius:12px;padding:12px;width:100%}
+
+  .splash{position:absolute;inset:0;z-index:80;background:radial-gradient(110% 70% at 50% 0%,#1B3526 0%,#0E1A14 60%,#0A130E 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;transition:opacity .4s, visibility .4s}
+  .splash.off{opacity:0;visibility:hidden}
+  .splash .bigdrop{width:76px;height:76px;border-radius:24px;background:linear-gradient(160deg,#2E8F55,#1C5A36);display:grid;place-items:center;font-size:38px;color:#fff;margin-bottom:16px;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+  .splash h2{font-size:25px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+  .splash p{font-size:13px;color:var(--soft);line-height:1.55;max-width:270px;margin-bottom:22px}
+  .splash .go{background:var(--go);color:#06140C;font-weight:800;font-size:14px;border-radius:13px;padding:13px 26px;margin-bottom:10px;width:230px}
+  .splash .free{color:var(--soft);font-size:12.5px;font-weight:700;padding:9px}
+  .splash .fine{position:absolute;bottom:18px;left:20px;right:20px;font-size:9px;color:var(--na);line-height:1.5}
+
+  .toast{position:absolute;left:50%;bottom:96px;transform:translate(-50%,16px);background:#EAF1E8;color:#12241A;font-size:12px;font-weight:700;border-radius:99px;padding:9px 16px;opacity:0;transition:all .3s;z-index:90;white-space:nowrap;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .hl{position:relative;z-index:52}
+  .hl:before{content:"";position:absolute;inset:-5px;border-radius:18px;border:2.5px solid var(--sky);box-shadow:0 0 0 4px rgba(79,168,196,.25), 0 0 30px rgba(79,168,196,.35);pointer-events:none;animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.75}50%{opacity:1}}
+
+  /* tour caption (outside phone) */
+  .tour{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(400px,calc(100vw - 18px));background:var(--card2);color:var(--aink);border:1px solid #33543F;border-radius:17px;padding:13px 15px 11px;z-index:120;box-shadow:0 18px 50px rgba(0,0,0,.5);display:none}
+  .tour.on{display:block}
+  .tour .step{font-size:9.5px;font-weight:800;letter-spacing:1.4px;color:var(--sky);margin-bottom:4px}
+  .tour h4{font-size:15px;font-weight:800;margin-bottom:4px;text-wrap:balance}
+  .tour p{font-size:12.5px;color:var(--soft);line-height:1.5;margin-bottom:10px}
+  .tour .row{display:flex;align-items:center;justify-content:space-between}
+  .tour .dots{display:flex;gap:4px}
+  .tour .dots i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+  .tour .dots i.on{background:var(--sky)}
+  .tour .nav{display:flex;gap:8px}
+  .tour .nb{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;color:var(--aink)}
+  .tour .nb.pri{background:var(--sky);border-color:var(--sky);color:#06232E}
+  .tour .skip{font-size:11px;color:var(--dim);font-weight:600;text-decoration:underline}
+  .tprog{height:3px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:9px}
+  .tprog i{display:block;height:100%;width:0;background:var(--sky)}
+</style>
+
+<div class="stage">
+  <aside class="rail">
+    <div class="brand"><div class="drop">💧</div><h1>SprayClarity</h1></div>
+    <p class="tag">¿Aplico hoy o espero? Un veredicto claro por hora, calculado para tu método y tu lote — en toda América.</p>
+    <ul>
+      <li><span class="ic">🟢</span><span><b>Veredicto por hora</b> — apto, precaución o no aplicar, con el motivo señalado.</span></li>
+      <li><span class="ic">🚁</span><span><b>5 métodos con su propia física</b> — dron, barras, mochila, atomizadora y mapeo.</span></li>
+      <li><span class="ic">♨️</span><span><b>Factores que otras apps no muestran</b> — ΔT, inversión térmica, índice Kp.</span></li>
+      <li><span class="ic">🎛</span><span><b>Umbrales a tu equipo</b> — y factores activables por el usuario.</span></li>
+      <li><span class="ic">📤</span><span><b>Reporte profesional por WhatsApp</b> — la cuadrilla decide viendo lo mismo.</span></li>
+      <li><span class="ic">🌎</span><span><b>Gratis · ES / EN / PT</b> — sin cuentas ni registro.</span></li>
+    </ul>
+    <button class="cta" onclick="startTour(true)">▶ &nbsp;Ver demo automática</button>
+    <p class="fine">Demo interactiva con datos simulados. Pronóstico orientativo — la decisión es siempre del usuario.</p>
+  </aside>
+
+  <div class="pwrap">
+    <div class="phone"><div class="bezel">
+      <div class="punch"></div>
+      <div class="sbar"><span class="mono">05:42</span><span class="demo">DEMO · DATOS SIMULADOS</span><span>📶 🔋</span></div>
+
+      <div class="screen" id="screen">
+        <div class="apphead">
+          <div class="lg"><span class="dropm">💧</span>SprayClarity</div>
+          <div class="gear">⚙</div>
+        </div>
+        <div class="loterow"><div class="lote">📍 Lote San Rafael <small>· 14.62, -90.52</small></div></div>
+
+        <div class="methods" id="methods"></div>
+
+        <div class="hero" id="hero">
+          <div class="eyebrow" id="tagline"></div>
+          <div class="vrow"><div class="vdot" id="vdot"></div>
+            <div><div class="vlabel" id="vlabel"></div><div class="vhour" id="vhour"></div></div>
+          </div>
+          <div class="reasons" id="reasons"></div>
+          <span class="nextwin" id="nextwin"></span>
+        </div>
+
+        <div class="readings" id="readings"></div>
+        <div class="chips" id="chips"></div>
+
+        <div class="card" id="tlcard">
+          <div class="ttl"><b>Hoy, hora por hora</b><span>tocá una barra</span></div>
+          <div class="tl" id="tl"></div>
+          <div class="tlx"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
+          <div class="windline mono" id="windline"></div>
+        </div>
+
+        <div class="card" id="dayscard">
+          <div class="ttl"><b>Próximos días</b><span>pronóstico de 14 días</span></div>
+          <div class="days" id="days"></div>
+        </div>
+
+        <div class="acts" id="acts">
+          <button class="act pri" id="bShare" onclick="openShare()">📤 Compartir</button>
+          <button class="act" onclick="openAlert()">🔔 Avisame</button>
+          <button class="act" id="bCfg" onclick="openCfg()">🎛 Umbrales</button>
+        </div>
+
+        <div class="mapc" id="mapc"><span class="pin">📍</span><span class="cap">Cada lote guardado, con su propio pronóstico</span></div>
+        <p class="legalline">Pronóstico orientativo basado en modelos meteorológicos.<br>La decisión de aplicar o volar es siempre del usuario.</p>
+      </div>
+
+      <div class="scrim" id="scrim" onclick="closeSheets()"></div>
+
+      <div class="sheet" id="shCfg">
+        <div class="grab"></div>
+        <h3>Umbrales y factores <span class="pill">TUYOS</span></h3>
+        <p class="sub">Elegí qué factores participan del veredicto — y ajustá los límites a tu equipo.</p>
+        <div class="fxrow" id="fxrow"></div>
+        <div class="thr"><b>Viento ideal máx</b><span class="mono" id="thrW"></span></div>
+        <div class="thr"><b>No aplicar desde</b><span class="mono" id="thrWH"></span></div>
+        <div class="thr"><b>ΔT ideal</b><span class="mono">2 – 8 °C</span></div>
+        <div class="thr"><b>Lluvia máx</b><span class="mono">0.2 mm · 60%</span></div>
+      </div>
+
+      <div class="sheet" id="shShare">
+        <div class="grab"></div>
+        <h3>Compartir el día</h3>
+        <p class="sub">Imagen profesional con la tabla completa — lista para WhatsApp.</p>
+        <div class="sharecard">
+          <div class="h"><span class="dropm" style="width:20px;height:20px;border-radius:7px;font-size:10px">💧</span> SprayClarity · <span id="shMeth"></span></div>
+          <table id="shTable"></table>
+          <div class="sharefoot">🧩 Factores considerados: <span id="shFx"></span><br>🟢 Apto · 🟡 Precaución · 🔴 No · Pronóstico orientativo</div>
+        </div>
+        <button class="wa" onclick="toast('Así de fácil: un toque y a WhatsApp 📲')">💬 Enviar por WhatsApp</button>
+      </div>
+
+      <div class="sheet" id="shAlert">
+        <div class="grab"></div>
+        <h3>Aviso diario 🔔</h3>
+        <p class="sub">Cada mañana, la ventana del día de tu lote — sin abrir la app.</p>
+        <div class="thr"><b>Hora del aviso</b><span class="mono">05:30</span></div>
+        <div class="thr"><b>Lote</b><span>📍 San Rafael</span></div>
+        <div class="thr"><b>Ejemplo</b><span style="font-size:11px;color:var(--soft)">“🟢 Hoy: ventana 05–09 h · viento calmo”</span></div>
+      </div>
+
+      <div class="splash" id="splash">
+        <div class="bigdrop">💧</div>
+        <h2>SprayClarity</h2>
+        <p><b>¿Aplico hoy o espero?</b><br>Conocé la app que responde esa pregunta con un veredicto claro por hora — para dron, barras, mochila, atomizadora y mapeo.</p>
+        <button class="go" onclick="startTour(true)">▶ &nbsp;Ver demo automática (1 min)</button>
+        <button class="free" onclick="startTour(false)">Recorrido guiado a mi ritmo 👆</button>
+        <button class="free" onclick="closeSplash()">Explorar libre</button>
+        <p class="fine">Demo con datos simulados · Gratis · Español, English, Português<br>Pronóstico orientativo — la decisión es siempre del usuario.</p>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div></div>
+  </div>
+</div>
+
+<div class="tour" id="tour">
+  <div class="tprog"><i id="tBar"></i></div>
+  <div class="step" id="tStep"></div>
+  <h4 id="tTitle"></h4>
+  <p id="tBody"></p>
+  <div class="row">
+    <button class="skip" onclick="endTour()">Salir</button>
+    <div class="dots" id="tDots"></div>
+    <div class="nav">
+      <button class="nb" id="tPlay" onclick="toggleAuto()" aria-label="pausa/reproducir">⏸</button>
+      <button class="nb" id="tPrev" onclick="tourGo(-1)">‹</button>
+      <button class="nb pri" id="tNext" onclick="tourGo(1)">›</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- Métodos (umbrales estilo producto, simplificados para demo) ----------
+const METH = {
+  dron:      {em:'🚁', s:'Dron',      tag:'Dron agrícola · pulverización', wg:15, wh:25, gc:20, gh:30, kp:true,  fly:false},
+  terrestre: {em:'🚜', s:'Terrestre', tag:'Pulverización terrestre · barras', wg:18, wh:30, gc:26, gh:38, kp:false, fly:false},
+  mochila:   {em:'🎒', s:'Mochila',   tag:'Mochila pulverizadora · manual', wg:12, wh:20, gc:17, gh:26, kp:false, fly:false},
+  motor:     {em:'🌀', s:'Atomizadora',tag:'Atomizadora a motor', wg:10, wh:18, gc:15, gh:24, kp:false, fly:false},
+  mapeo:     {em:'📷', s:'Mapeo',     tag:'Dron de mapeo · vuelo de imágenes', wg:25, wh:38, gc:35, gh:45, kp:true, fly:true}
+};
+let active='dron';
+let FX = {wind:true, inv:true, dt:true, rain:true, kp:true, sun:true};
+let selHour=6, selDay=0;
+
+// ---------- Datos simulados (3 patrones de día) ----------
+function mkDay(kind){
+  const H=[];
+  for(let h=0;h<24;h++){
+    let s,g,dt,pp,pr,kp,inv=false,sun= h>=6&&h<=17 ? Math.round(Math.sin((h-6)/11*Math.PI)*62) : 0, cloud=20;
+    if(kind===0){ // día clásico: ventana de madrugada/mañana
+      s = h<5? 5+h%3 : h<10? 6+(h-5)*1.2 : h<16? 17+(h-10)*1.8 : h<19? 15 : 9;
+      g = s*1.6+3; dt = h<9? 2.5+h*0.4 : h<16? 8+ (h-9)*0.5 : 5.5;
+      pp = h<15? 5 : 20; pr=0; kp=2.0; inv = h>=2&&h<=4; cloud= h<12? 15:35;
+    } else if(kind===1){ // día ventoso
+      s = h<6? 14 : 20+Math.round(9*Math.sin((h-6)/8*Math.PI));
+      g = s*1.7+5; dt = 6+ (h>=10&&h<=15? 3:0); pp=10; pr=0; kp=3.2; cloud=30;
+    } else { // tormenta: lluvia + Kp alto
+      s = h<9? 7 : 13; g=s*1.6+4; dt= h<9? 3.5 : 6;
+      pp = h<9? 15 : h<13? 55 : 85; pr = h>=13? 1.4 : 0; kp = h<10? 3.8 : 5.7; cloud=80; sun=Math.round(sun*0.4);
+    }
+    H.push({h, s:Math.round(s), g:Math.round(g), dt:+dt.toFixed(1), pp:Math.round(pp), pr, kp, inv, sun, cloud, t: h<6? 17+h*0.3 : 18+Math.round(9*Math.sin((h-6)/12*Math.PI)), rh: 88 - (h>=10&&h<=16? 30:8)});
+  }
+  return H;
+}
+const DAYS=[
+  {lbl:'HOY', d:mkDay(0)}, {lbl:'MAÑ', d:mkDay(1)}, {lbl:'JUE', d:mkDay(2)},
+  {lbl:'VIE', d:mkDay(0)}, {lbl:'SÁB', d:mkDay(1)}, {lbl:'DOM', d:mkDay(0)}, {lbl:'LUN', d:mkDay(2), pro:true}
+];
+
+// ---------- Veredicto ----------
+function assess(x,m){
+  const p=[];
+  if(FX.wind){
+    if(x.s>m.wh)p.push([2,'viento fuerte']);
+    else if(x.g>m.gh)p.push([2,'ráfagas fuertes']);
+    else if(x.s>m.wg)p.push([1,'viento alto']);
+    else if(x.g>m.gc)p.push([1,'ráfagas']);
+  }
+  if(!m.fly){
+    if(FX.inv && x.inv)p.push([2,'inversión térmica']);
+    if(FX.dt){ if(x.dt>10)p.push([2,'evaporación alta (ΔT)']); else if(x.dt>8)p.push([1,'evaporación (ΔT)']); else if(x.dt<2&&x.h>5&&x.h<20)p.push([1,'ΔT bajo']); }
+  } else {
+    if(FX.sun){ if(x.sun<5)p.push([2,'sin luz (sol muy bajo)']); else if(x.sun<40)p.push([1,'sol bajo (sombras)']); if(x.cloud>25&&x.cloud<75)p.push([1,'nubosidad parcial']); }
+  }
+  if(FX.rain){ if(x.pr>=0.2)p.push([2,'lluvia']); else if(x.pp>=60)p.push([2,'lluvia muy probable']); else if(x.pp>=40)p.push([1,'posible lluvia']); }
+  if(m.kp&&FX.kp){ if(x.kp>=5)p.push([2,'tormenta geomagnética (GPS)']); else if(x.kp>=4)p.push([1,'Kp alto (GPS)']); }
+  const lvl = p.some(r=>r[0]===2)?2 : p.some(r=>r[0]===1)?1 : 0;
+  return {lvl, reasons:p.map(r=>r[1])};
+}
+const COL=['var(--go)','var(--cau)','var(--no)'];
+const LBL_APLICAR=['APTO AHORA','PRECAUCIÓN','NO APLICAR'];
+const LBL_VOLAR=['APTO PARA VOLAR','PRECAUCIÓN','NO VOLAR'];
+
+// ---------- Render ----------
+const $=id=>document.getElementById(id);
+function fxKeysFor(m){ return m.fly? ['wind','sun','rain','kp'] : ['wind','inv','dt','rain'].concat(m.kp?['kp']:[]); }
+const FXL={wind:'💨 Viento',inv:'🌫 Inversión',dt:'♨️ ΔT',rain:'🌧 Lluvia',kp:'🛰 Kp (GPS)',sun:'☀️ Luz solar'};
+
+function render(){
+  const m=METH[active], D=DAYS[selDay].d, x=D[selHour], v=assess(x,m);
+  // methods
+  $('methods').innerHTML=Object.keys(METH).map(k=>`<button class="mi${k===active?' on':''}" onclick="setMeth('${k}')"><span class="em">${METH[k].em}</span>${METH[k].s}</button>`).join('');
+  // hero
+  $('tagline').textContent=m.tag;
+  $('vdot').style.background=COL[v.lvl];
+  $('vlabel').textContent=(m.fly?LBL_VOLAR:LBL_APLICAR)[v.lvl];
+  $('vlabel').style.color=v.lvl===0?'var(--aink)':COL[v.lvl];
+  $('vhour').textContent=(selDay===0?'Hoy':DAYS[selDay].lbl)+' · '+String(x.h).padStart(2,'0')+':00 h';
+  $('reasons').textContent=v.reasons.length? v.reasons.join(' · ') : 'Todos los factores en rango ✅';
+  // próxima ventana apta
+  let nw='—';
+  for(let i=0;i<24;i++){const hh=(selHour+i)%24; if(assess(D[hh],m).lvl===0){nw=String(hh).padStart(2,'0')+':00'; let e=hh; while(assess(D[(e+1)%24],m).lvl===0&&e<23)e++; nw+='–'+String(e).padStart(2,'0')+':00'; break;}}
+  $('nextwin').textContent='🟢 Próxima ventana apta: '+nw;
+  // readings
+  $('readings').innerHTML=
+    `<div class="rd"><div class="k">Viento</div><div class="v mono">${x.s}<small> km/h</small></div></div>
+     <div class="rd"><div class="k">Ráfaga</div><div class="v mono">${x.g}<small> km/h</small></div></div>`+
+    (m.fly?`<div class="rd"><div class="k">Sol</div><div class="v mono">${x.sun}<small> °</small></div></div>`
+          :`<div class="rd"><div class="k">ΔT</div><div class="v mono">${x.dt}<small> °C</small></div></div>`);
+  // chips
+  const ch=[];
+  ch.push(['Viento',`${x.s}<small> km/h</small>`,`≤${m.wg}`, x.s>m.wh?2:x.s>m.wg?1:0]);
+  ch.push(['Ráfaga',`${x.g}<small> km/h</small>`,`máx ${m.gh}`, x.g>m.gh?2:x.g>m.gc?1:0]);
+  if(m.fly){ ch.push(['Sol',`${x.sun}<small> °</small>`,'≥40°', x.sun<5?2:x.sun<40?1:0]); ch.push(['Nubes',`${x.cloud}<small> %</small>`,'luz pareja', (x.cloud>25&&x.cloud<75)?1:0]); }
+  else { ch.push(['ΔT',`${x.dt}<small> °C</small>`,'2–8', x.dt>10?2:(x.dt>8||x.dt<2)?1:0]); ch.push(['Inversión', x.inv?'Sí':'No','2–80 m', x.inv?2:0]); }
+  ch.push(['Lluvia',`${x.pp}<small> %</small>`, x.pr?x.pr+' mm':'sin lluvia', x.pr>=0.2?2:x.pp>=60?2:x.pp>=40?1:0]);
+  if(m.kp) ch.push(['Kp · GPS',`${x.kp}`,'RTK', x.kp>=5?2:x.kp>=4?1:0]);
+  $('chips').innerHTML=ch.map(c=>`<div class="fc"><div class="h">${c[0]}<span class="fdot" style="background:${COL[c[3]]}"></span></div><div class="v mono">${c[1]}</div><div class="s">${c[2]}</div></div>`).join('');
+  // timeline
+  $('tl').innerHTML=D.map((hh,i)=>{const lv=assess(hh,m).lvl; const hgt=28+hh.s*1.7;
+    return `<div class="bar${i===selHour?' sel':''}" onclick="selHr(${i})" style="height:${Math.min(74,hgt)}px;background:${COL[lv]}"></div>`;}).join('');
+  const avg=Math.round(D.reduce((a,b)=>a+b.s,0)/24), mx=Math.max(...D.map(h=>h.g));
+  $('windline').textContent=`💨 sostenido ~${avg} · máx ${mx} km/h`;
+  // days
+  $('days').innerHTML=DAYS.map((dd,i)=>{const dots=[6,11,16].map(h=>`<i style="background:${COL[assess(dd.d[h],m).lvl]}"></i>`).join('');
+    return `<button class="day${i===selDay?' on':''}" onclick="selDy(${i})">${dd.lbl}<span class="dd">${dots}</span>${dd.pro?'<span class="pro">★14 DÍAS</span>':''}</button>`;}).join('');
+  // cfg sheet
+  $('fxrow').innerHTML=fxKeysFor(m).map(k=>`<button class="fx${FX[k]?' on':''}" onclick="tglFx('${k}')">${FXL[k]}</button>`).join('');
+  $('thrW').textContent=m.wg+' km/h'; $('thrWH').textContent=m.wh+' km/h';
+  // share sheet
+  $('shMeth').textContent=m.tag;
+  $('shTable').innerHTML='<tr><th>HORA</th><th></th><th>VIENTO</th><th>LLUVIA</th>'+(m.kp?'<th>KP</th>':'')+'<th>MOTIVO</th></tr>'+
+    [5,6,7,8,12,14,16].map(h=>{const hh=D[h],vv=assess(hh,m);
+      return `<tr><td class="mono">${String(h).padStart(2,'0')}:00</td><td><span class="dt" style="background:${COL[vv.lvl]}"></span></td><td class="mono">${hh.s} <span style="color:#8CA091">${hh.g}</span></td><td class="mono">${hh.pp}%</td>${m.kp?`<td class="mono">${hh.kp}</td>`:''}<td>${vv.reasons[0]||'—'}</td></tr>`;}).join('');
+  $('shFx').textContent=fxKeysFor(m).filter(k=>FX[k]).map(k=>FXL[k].split(' ').slice(1).join(' ')).join(', ')+(fxKeysFor(m).every(k=>FX[k])?'':' · ⚠ recomendado: todos activos');
+}
+function setMeth(k){active=k;render();if(tourI===1)toast('¡Mirá cómo cambió el veredicto! 👀');}
+function selHr(i){selHour=i;render();}
+function selDy(i){selDay=i;selHour=DAYS[i].lbl==='HOY'?6:9;render();}
+function tglFx(k){const keys=fxKeysFor(METH[active]);const on=keys.filter(x=>FX[x]);if(FX[k]&&on.length===1){toast('Dejá al menos un factor activo 😉');return;}FX[k]=!FX[k];render();}
+
+// sheets
+function openCfg(){$('shCfg').classList.add('open');$('scrim').classList.add('on');}
+function openShare(){$('shShare').classList.add('open');$('scrim').classList.add('on');}
+function openAlert(){$('shAlert').classList.add('open');$('scrim').classList.add('on');}
+function closeSheets(){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));$('scrim').classList.remove('on');}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600);}
+function closeSplash(){$('splash').classList.add('off');}
+
+// ---------- Tour ----------
+const STEPS=[
+ {t:'Un veredicto, no números sueltos', b:'La app cruza el clima y te dice si la hora es apta 🟢, de precaución 🟡 o no apta 🔴 — con la próxima ventana buena señalada.', el:'hero', dur:6500},
+ {t:'5 métodos, cada uno con su física', b:'Dron, barras, mochila, atomizadora, mapeo… mirá cómo cambia TODO el veredicto al cambiar de método. La app piensa como tu equipo.', el:'methods', dur:9000,
+  act:()=>[setTimeout(()=>setMeth('motor'),1600),setTimeout(()=>setMeth('mapeo'),3800),setTimeout(()=>setMeth('dron'),6200)]},
+ {t:'Te dice POR QUÉ', b:'Deriva, ΔT, inversión térmica, Kp… el motivo de cada color queda a la vista. Decidís con argumentos, no con corazonadas.', el:'chips', dur:7000,
+  act:()=>[setTimeout(()=>selHr(12),1200)]},
+ {t:'Las 24 horas en colores', b:'Cada barra es una hora: la altura es el viento; el color, el veredicto. Tocá cualquiera para inspeccionarla.', el:'tlcard', dur:7500,
+  act:()=>[setTimeout(()=>selHr(7),1200),setTimeout(()=>selHr(16),3200),setTimeout(()=>selHr(6),5200)]},
+ {t:'Planificá la semana', b:'Pronóstico de 14 días, hora por hora. Este JUE hay tormenta geomagnética (Kp) y lluvia — mirá el motivo en el veredicto.', el:'dayscard', dur:8000},
+ {t:'Umbrales a TU equipo', b:'Cada equipo es distinto: ajustá los límites y elegí qué factores participan del veredicto. Mirá: apagamos el Kp… y lo volvemos a encender.', el:'bCfg', open:'cfg', dur:9000,
+  act:()=>[setTimeout(()=>tglFx('kp'),2600),setTimeout(()=>tglFx('kp'),5600)]},
+ {t:'La cuadrilla ve lo mismo', b:'Un toque genera una tarjeta profesional con la tabla del día — veredictos, motivos y ubicación — lista para WhatsApp.', el:'bShare', open:'share', dur:8000},
+ {t:'Tu aviso de las 5:30', b:'Cada mañana, la ventana del día de tu lote te espera en la pantalla del teléfono. Sin abrir la app.', el:'acts', open:'alert', dur:6500},
+ {t:'Gratis, en 3 idiomas, en toda América', b:'Sin cuentas ni registro. Español, English, Português. Muy pronto en Google Play. 🌎', el:'hero', dur:7000}
+];
+let tourI=-1, auto=false, autoT=null, actT=[];
+function clearTimers(){clearTimeout(autoT);autoT=null;actT.forEach(clearTimeout);actT=[];}
+function startTour(a){closeSplash();auto=a===true;tourI=0;showStep();}
+function endTour(){clearTimers();tourI=-1;auto=false;$('tour').classList.remove('on');clearHl();closeSheets();}
+function clearHl(){document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));}
+function toggleAuto(){
+  if(tourI<0)return;
+  auto=!auto;
+  if(auto){showStep();}
+  else{clearTimeout(autoT);autoT=null;setBar(0,0);$('tPlay').textContent='▶';}
+}
+function setBar(pct,ms){
+  const b=$('tBar');
+  b.style.transition='none';b.style.width=(pct?'100%':'0');
+  if(ms){void b.offsetWidth;b.style.transition='width '+ms+'ms linear';b.style.width='100%';}
+}
+function tourGo(d){clearTimers();tourI+=d;if(tourI<0)tourI=0;
+  if(tourI>=STEPS.length){endTour();toast('¡Eso es SprayClarity! 💧 Explorá libre 👆');return;}
+  showStep();}
+function showStep(){
+  const s=STEPS[tourI];clearTimers();clearHl();closeSheets();
+  const el=$(s.el);
+  if(el){el.classList.add('hl');el.scrollIntoView({block:'center',behavior:'smooth'});}
+  if(s.open==='cfg')actT.push(setTimeout(openCfg,400)); if(s.open==='share')actT.push(setTimeout(openShare,400)); if(s.open==='alert')actT.push(setTimeout(openAlert,400));
+  if(tourI===4){selDy(2);actT.push(setTimeout(()=>selHr(14),1400));}
+  if(tourI===8){selDy(0);selHr(6);toast('Muy pronto en Google Play 🌱');}
+  if(auto&&s.act)actT.push(...s.act());
+  $('tStep').textContent='PASO '+(tourI+1)+' DE '+STEPS.length+(auto?' · AUTO':'');
+  $('tTitle').textContent=s.t;$('tBody').textContent=s.b;
+  $('tDots').innerHTML=STEPS.map((_,i)=>`<i class="${i===tourI?'on':''}"></i>`).join('');
+  $('tPrev').style.visibility=tourI===0?'hidden':'visible';
+  $('tNext').textContent=tourI===STEPS.length-1?'✓':'›';
+  $('tPlay').textContent=auto?'⏸':'▶';
+  if(auto){setBar(1,s.dur);autoT=setTimeout(()=>tourGo(1),s.dur);}else setBar(0,0);
+  $('tour').classList.add('on');
+}
+render();
+</script>
+
+</body>
+</html>
