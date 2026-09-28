@@ -1,5 +1,6 @@
 {
   "pro_start": "2026-10-11",
   "founder_until": "2026-10-31",
-  "codes": {}
+  "codes": {},
+  "latest": { "android": "1.7.8", "ios": "1.7.8" }
 }
