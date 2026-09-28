@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SprayClarity — Demo interactiva</title>
 <meta property="og:title" content="SprayClarity — Probá la app en 1 minuto 💧">
-<meta property="og:description" content="¿Aplico hoy o espero? Demo interactiva: veredicto por hora, 5 métodos, umbrales a tu equipo y reporte para WhatsApp. Gratis · ES/EN/PT.">
+<meta property="og:description" content="Tu ventana ideal de aplicación, hora por hora. Demo interactiva: veredicto por hora, 5 métodos, umbrales a tu equipo y reporte para WhatsApp. Gratis · ES/EN/PT/FR.">
 <meta property="og:image" content="https://dagri7048-pixel.github.io/sprayclarity-legal/demo-og.png">
 <meta property="og:url" content="https://dagri7048-pixel.github.io/sprayclarity-legal/demo.html">
 <meta property="og:type" content="website">
-<meta name="description" content="Demo interactiva de SprayClarity: la app que responde ¿aplico hoy o espero? con un veredicto claro por hora.">
+<meta name="description" content="Demo interactiva de SprayClarity: tu ventana ideal de aplicación, hora por hora, con un veredicto claro para cada hora.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A7%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -190,7 +190,7 @@
 <div class="stage">
   <aside class="rail">
     <div class="brand"><div class="drop">💧</div><h1>SprayClarity</h1></div>
-    <p class="tag">¿Aplico hoy o espero? Un veredicto claro por hora, calculado para tu método y tu lote — en toda América.</p>
+    <p class="tag">Tu ventana ideal de aplicación, hora por hora: un veredicto claro, calculado para tu método y tu lote — en toda América.</p>
     <ul>
       <li><span class="ic">🟢</span><span><b>Veredicto por hora</b> — apto, precaución o no aplicar, con el motivo señalado.</span></li>
       <li><span class="ic">🚁</span><span><b>5 métodos con su propia física</b> — dron, barras, mochila, atomizadora y mapeo.</span></li>
@@ -288,11 +288,11 @@
       <div class="splash" id="splash">
         <div class="bigdrop">💧</div>
         <h2>SprayClarity</h2>
-        <p><b>¿Aplico hoy o espero?</b><br>Conocé la app que responde esa pregunta con un veredicto claro por hora — para dron, barras, mochila, atomizadora y mapeo.</p>
+        <p><b>Tu ventana ideal de aplicación, hora por hora.</b><br>Conocé la app que te da un veredicto claro por hora — para dron, barras, mochila, atomizadora y mapeo.</p>
         <button class="go" onclick="startTour(true)">▶ &nbsp;Ver demo automática (1 min)</button>
         <button class="free" onclick="startTour(false)">Recorrido guiado a mi ritmo 👆</button>
         <button class="free" onclick="closeSplash()">Explorar libre</button>
-        <p class="fine">Demo con datos simulados · Gratis · Español, English, Português<br>Pronóstico orientativo — la decisión es siempre del usuario.</p>
+        <p class="fine">Demo con datos simulados · Gratis · Español, English, Português, Français<br>Pronóstico orientativo — la decisión es siempre del usuario.</p>
       </div>
 
       <div class="toast" id="toast"></div>
@@ -493,7 +493,7 @@ const STEPS=[
   act:()=>[setTimeout(()=>tglFx('kp'),2600),setTimeout(()=>tglFx('kp'),5600)]},
  {t:'Tu equipo ve lo mismo', b:'Un toque genera una tarjeta profesional con la tabla del día — veredictos, motivos y ubicación — lista para WhatsApp.', el:'bShare', open:'share', dur:8000},
  {t:'Tu aviso de las 5:30', b:'Cada mañana, la ventana del día de tu lote te espera en la pantalla del teléfono. Sin abrir la app.', el:'acts', open:'alert', dur:6500},
- {t:'Gratis, en 3 idiomas, en toda América', b:'Sin cuentas ni registro. Español, English, Português. Muy pronto en Google Play. 🌎', el:'hero', dur:7000}
+ {t:'Gratis, en 4 idiomas, en toda América', b:'Sin cuentas ni registro. Español, English, Português, Français. Ya en Google Play y App Store. 🌎', el:'hero', dur:7000}
 ];
 let tourI=-1, auto=false, autoT=null, actT=[];
 function clearTimers(){clearTimeout(autoT);autoT=null;actT.forEach(clearTimeout);actT=[];}
@@ -520,7 +520,7 @@ function showStep(){
   if(el){el.classList.add('hl');el.scrollIntoView({block:'center',behavior:'smooth'});}
   if(s.open==='cfg')actT.push(setTimeout(openCfg,400)); if(s.open==='share')actT.push(setTimeout(openShare,400)); if(s.open==='alert')actT.push(setTimeout(openAlert,400));
   if(tourI===4){selDy(2);actT.push(setTimeout(()=>selHr(14),1400));}
-  if(tourI===8){selDy(0);selHr(6);toast('Muy pronto en Google Play 🌱');}
+  if(tourI===8){selDy(0);selHr(6);toast('Ya disponible en Google Play y App Store 🌱');}
   if(auto&&s.act)actT.push(...s.act());
   $('tStep').textContent='PASO '+(tourI+1)+' DE '+STEPS.length+(auto?' · AUTO':'');
   $('tTitle').textContent=s.t;$('tBody').textContent=s.b;
