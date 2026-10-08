@@ -11,6 +11,31 @@
 <meta property="og:type" content="website">
 <meta name="description" content="SprayClarity: tu ventana ideal de aplicación, hora por hora — veredicto claro para aplicar o volar, por método y por lote. Gratis, en español, inglés, portugués y francés. En Google Play y App Store.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A7%3C/text%3E%3C/svg%3E">
+<script>
+/* ENLACE INTELIGENTE (2026-10-07): sprayclarity.com/app?via=<origen>
+   iPhone/iPad → App Store · Android → Google Play con referrer utm_source=<origen> (la misma atribución que ya usan
+   los reportes compartidos y los anuncios) · computadora u otros → esta página con las dos insignias.
+   ?noredir=1 desactiva la redirección (para ver la página desde un teléfono). Los rastreadores de WhatsApp/Facebook no
+   ejecutan este script: la vista previa (og:*) sigue saliendo. */
+(function(){
+  try{
+    var q=new URLSearchParams(location.search);
+    var via=((q.get('via')||q.get('utm_source')||'web').replace(/[^a-z0-9_-]/gi,'').slice(0,40))||'web';
+    var PLAY='https://play.google.com/store/apps/details?id=com.planoalto.sprayclarity&referrer='+encodeURIComponent('utm_source='+via);
+    var IOS='https://apps.apple.com/app/id6804949973';
+    window.SC_LINKS={play:PLAY,ios:IOS,via:via};
+    document.addEventListener('DOMContentLoaded',function(){ /* en la página, la insignia de Play lleva el mismo origen */
+      try{document.querySelectorAll('a[href*="play.google.com"]').forEach(function(a){a.href=PLAY;});}catch(e){}
+    });
+    if(q.get('noredir')==='1')return;
+    var ua=navigator.userAgent||'';
+    var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1); /* iPadOS se presenta como Mac */
+    var isAndroid=/Android/i.test(ua);
+    if(isIOS){location.replace(IOS);return;}
+    if(isAndroid){location.replace(PLAY);return;}
+  }catch(e){}
+})();
+</script>
 <style>
   :root{
     --bg:#0A130E; --card:#12241A; --card2:#182E22; --line:#33543F;
