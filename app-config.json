@@ -1,6 +1,29 @@
 {
   "pro_start": "2026-10-16",
   "founder_until": "2026-10-31",
-  "codes": {},
+  "codes": {
+    "ESPERAVT7T": { "tag": "espera90", "name": "Lista de espera (prueba)" },
+    "ESPERAFVFY": { "tag": "espera90", "name": "Lista de espera (prueba)" },
+    "ESPERAW9XQ": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERA9AWE": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAP4FF": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAFMJN": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAJ9MY": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAMCQH": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAPXYG": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERATVGR": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERA7T94": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAJR7X": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAGRG3": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERA49VD": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERANGGG": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAQDXF": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAWHH9": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERAAMXY": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERANCEK": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERANR3G": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERA4CXK": { "tag": "espera90", "name": "Lista de espera" },
+    "ESPERA3C4C": { "tag": "espera90", "name": "Lista de espera" }
+  },
   "latest": { "android": "1.9.1", "ios": "1.9.1" }
 }
