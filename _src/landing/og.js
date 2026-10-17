@@ -9,9 +9,10 @@ const LANGS = ['es', 'pt', 'en', 'fr'], PORT = 9391;
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#34C76A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const GAUGE = '<svg class="gauge" viewBox="0 0 120 86"><path d="M12 60A48 48 0 0 1 36 18.4" stroke="#34C76A"/><path d="M36 18.4A48 48 0 0 1 84 18.4" stroke="#4B4122"/><path d="M84 18.4A48 48 0 0 1 108 60" stroke="#4A2B22"/><line x1="60" y1="60" x2="30.5" y2="41.5" stroke="#F4F8F2" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="60" r="13" fill="#34C76A" stroke="none"/><path d="M53.5 60.2l4.4 4.4 8.6-9.2" stroke="#06140C" stroke-width="3.4" stroke-linejoin="round"/></svg>';
 fs.mkdirSync(TMP, { recursive: true });
-const html = (l) => {
-  const t = T[l], h = t.hero.h1, largo = h.replace(/<[^>]+>/g, '').length > 50;
-  return `<!doctype html><html lang="${t.lang}"><head><meta charset="utf-8"><title>og ${l}</title>
+/* pm = la de la página de mapeo (titular de pm.hero, captura con Dron de mapeo, veredicto hoyM) */
+const html = (l, pm) => {
+  const t = T[l], h = pm ? t.pm.hero.h1 : t.hero.h1, largo = h.replace(/<[^>]+>/g, '').length > 50, V = pm ? t.data.hoyM : t.data.hoy;
+  return `<!doctype html><html lang="${t.lang}"><head><meta charset="utf-8"><title>og ${pm ? 'mapeo-' : ''}${l}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@500&display=swap">
 <style>
 html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#0B1510}
@@ -31,14 +32,14 @@ h1 em{font-style:normal;color:#34C76A}
 .device img{display:block;width:100%;border-radius:36px}
 .chip{position:absolute;left:calc(7% + 22px);top:calc(11% + 9px);width:86%;display:flex;align-items:center;gap:12px;padding:12px 14px;box-sizing:border-box;background:#17261D;border:1px solid rgba(52,199,106,.26);border-radius:15px;box-shadow:0 26px 50px -20px rgba(0,0,0,.9);transform:translateZ(80px)}
 .chip .gauge{width:28%;flex:none;fill:none;stroke-width:10;stroke-linecap:round}
-.chip b{display:block;font:800 ${t.data.hoy.verdict.length > 14 ? 17 : 21}px/1.05 Archivo,sans-serif;color:#34C76A}
+.chip b{display:block;font:800 ${V.verdict.length > 14 ? 17 : 21}px/1.05 Archivo,sans-serif;color:#34C76A}
 .chip span{display:block;margin-top:5px;font:500 11px/1.3 'IBM Plex Mono',monospace;color:#B7C6BC}
 </style></head><body><div class="og"><div class="field"></div>
 <div class="brand"><img src="/assets/landing/img/icon-192.png" alt=""><span>Spray<b>Clarity</b></span></div>
 <h1>${h}</h1>
 <div class="micro">${t.hero.micro.map((m) => `<span>${CHECK}${m}</span>`).join('')}</div>
-<div class="scene"><div class="rig"><div class="device"><img src="/assets/landing/img/hoy-${l}.webp" alt=""></div>
-<div class="chip">${GAUGE}<div><b>${t.data.hoy.verdict}</b>${t.data.hoy.verdict.length > 14 ? '' : `<span>${t.data.hoy.all}</span>`}</div></div></div></div>
+<div class="scene"><div class="rig"><div class="device"><img src="/assets/landing/img/hoy-${l}${pm ? '-mapeo' : ''}.webp" alt=""></div>
+<div class="chip">${GAUGE}<div><b>${V.verdict}</b>${V.verdict.length > 14 ? '' : `<span>${V.all}</span>`}</div></div></div></div>
 </div></body></html>`;
 };
 const chrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -56,15 +57,16 @@ const espera = (ms) => new Promise((r) => setTimeout(r, ms));
   const js = async (e) => { const r = await send('Runtime.evaluate', { expression: e, returnByValue: true, awaitPromise: true }); return r.result && r.result.result ? r.result.result.value : undefined; };
   await send('Page.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: 1200, height: 630, deviceScaleFactor: 1, mobile: false });
-  for (const l of LANGS) {
-    const f = path.join(TMP, `og-${l}.html`); fs.writeFileSync(f, html(l), 'utf8');
-    await send('Page.navigate', { url: `http://localhost:4603/_src/landing/og-tmp/og-${l}.html` });
+  for (const pm of [false, true]) for (const l of LANGS) {
+    const k = (pm ? 'mapeo-' : '') + l;
+    const f = path.join(TMP, `og-${k}.html`); fs.writeFileSync(f, html(l, pm), 'utf8');
+    await send('Page.navigate', { url: `http://localhost:4603/_src/landing/og-tmp/og-${k}.html` });
     let ok = false;
-    for (let i = 0; i < 150 && !ok; i++) { ok = await js(`(async()=>{if(document.title!=='og ${l}')return false;await document.fonts.ready;var im=[].slice.call(document.images);return im.length>0&&im.every(function(i){return i.complete&&i.naturalWidth>0})})()`); if (!ok) await espera(100); }
-    if (!ok) throw new Error('no cargó og ' + l);
+    for (let i = 0; i < 150 && !ok; i++) { ok = await js(`(async()=>{if(document.title!=='og ${k}')return false;await document.fonts.ready;var im=[].slice.call(document.images);return im.length>0&&im.every(function(i){return i.complete&&i.naturalWidth>0})})()`); if (!ok) await espera(100); }
+    if (!ok) throw new Error('no cargó og ' + k);
     await espera(300);
     const s = await send('Page.captureScreenshot', { format: 'png' });
-    const png = path.join(TMP, `og-${l}.png`), jpg = path.join(REPO, 'assets', 'landing', `og-${l}.jpg`);
+    const png = path.join(TMP, `og-${k}.png`), jpg = path.join(REPO, 'assets', 'landing', `og-${k}.jpg`);
     fs.writeFileSync(png, Buffer.from(s.result.data, 'base64'));
     execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', png, '-q:v', '3', jpg]);
     console.log('✓', path.relative(REPO, jpg), (fs.statSync(jpg).size / 1024).toFixed(0), 'KB');

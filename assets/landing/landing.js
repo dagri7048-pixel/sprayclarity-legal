@@ -110,8 +110,41 @@
     $$('main > section').forEach(function (s) { spy.observe(s); });
   }
 
-  /* 3D: el teléfono de la portada sigue al puntero (solo mouse; en el teléfono se mece solo) */
-  var rig = $('.rig');
+  /* selector de método de la portada (Dron · Terrestre): el teléfono gira en 3D y muestra la captura de ese método.
+     Cambia solo cada 6,5 s mientras se ve, hasta que la persona toca una pestaña; con movimiento reducido, sin giro ni cambio solo. */
+  var tabs = $$('.mtabs [role=tab]'), rigsBox = $('.rigs');
+  if (tabs.length && rigsBox) {
+    var cur = 'dron', busy = false, auto = null, tocado = false;
+    var rigOf = function (m) { return $('.rig[data-m="' + m + '"]', rigsBox); };
+    var replayGauge = function (r) { var g = $('.gauge', r); if (!g) return; g.classList.remove('go'); void g.getBoundingClientRect(); setTimeout(function () { g.classList.add('go'); }, 420); };
+    var mostrar = function (m) {
+      if (m === cur || busy) return;
+      var a = rigOf(cur), b = rigOf(m); if (!a || !b) return;
+      tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.getAttribute('data-tab') === m)); });
+      cur = m;
+      if (!animOk) { a.classList.remove('on', 'play'); a.setAttribute('aria-hidden', 'true'); b.classList.add('on', 'play'); b.removeAttribute('aria-hidden'); return; }
+      busy = true; rigsBox.classList.add('flipping'); a.classList.add('flip-out');
+      setTimeout(function () {
+        a.classList.remove('on', 'play', 'flip-out', 'again'); a.setAttribute('aria-hidden', 'true');
+        b.classList.add('flip-pre', 'on'); b.removeAttribute('aria-hidden'); void b.getBoundingClientRect();
+        b.classList.remove('flip-pre'); b.classList.add('flip-in', 'play', 'again'); replayGauge(b);
+        setTimeout(function () { b.classList.remove('flip-in'); rigsBox.classList.remove('flipping'); busy = false; }, 660);
+      }, 370);
+    };
+    var parar = function () { if (auto) { clearInterval(auto); auto = null; } };
+    var arrancar = function () { if (auto || tocado || !animOk) return; auto = setInterval(function () { if (!d.hidden) mostrar(cur === 'dron' ? 'terrestre' : 'dron'); }, 6500); };
+    tabs.forEach(function (t) { t.addEventListener('click', function () { tocado = true; parar(); mostrar(t.getAttribute('data-tab')); }); });
+    $('.mtabs').addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var i = tabs.map(function (t) { return t.getAttribute('data-tab'); }).indexOf(cur);
+      var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click();
+    });
+    if (animOk) new IntersectionObserver(function (es) { if (es[0].isIntersecting) arrancar(); else parar(); }, { threshold: 0.3 }).observe(rigsBox);
+  }
+
+  /* 3D: el teléfono de la portada sigue al puntero (solo mouse; en el teléfono se mece solo). Las variables van en la
+     escena para que los dos teléfonos del selector compartan la inclinación. */
+  var rig = $('[data-scene]');
   if (rig && heroSec && fine && !reduce) {
     var tx = 0, ty = 0, cx = 0, cy = 0, run = 0;
     var tick = function () {

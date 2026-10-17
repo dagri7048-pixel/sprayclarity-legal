@@ -42,6 +42,37 @@ test('las demás páginas del sitio tampoco usan voseo (el portugués "usá-lo" 
   }
 });
 
+test('sin cifras de descargas ni de uso en la franja de prueba (pedido del usuario 2026-10-17)', () => {
+  for (const l of LANGS) {
+    const s = JSON.stringify(T[l].proof);
+    assert.doesNotMatch(s, /instal|descarg|download|baixad|téléchar|usaron|used it|usaram|utilisateurs|30\s?(días|dias|days|jours)|1[.,\s ]?[05]00/i, `${l}: cifra de descargas o de uso en «${s}»`);
+  }
+});
+
+test('las 4 páginas de mapeo existen, se enlazan entre sí y apuntan al Play con su propio origen', () => {
+  for (const l of LANGS) {
+    const f = path.join(REPO, ...T[l].pm.path.split('/').filter(Boolean), 'index.html');
+    assert.ok(fs.existsSync(f), `${l}: falta ${T[l].pm.path}`);
+    const h = fs.readFileSync(f, 'utf8');
+    for (const x of LANGS) assert.ok(h.includes(`hreflang="${T[x].lang}" href="https://sprayclarity.com${T[x].pm.path}"`), `${l}: falta la alterna ${x}`);
+    assert.match(h, /utm_source%3Dsitio-mapeo-/, `${l}: el Play de la página de mapeo no lleva su origen`);
+    assert.match(h, new RegExp(`og-mapeo-${l}\\.jpg`));
+    assert.ok(fs.existsSync(path.join(REPO, 'assets', 'landing', `og-mapeo-${l}.jpg`)), `${l}: falta og-mapeo-${l}.jpg`);
+    assert.doesNotMatch(h, /\$\{|undefined|NaN|\[object Object\]/, `${l}: resto de plantilla en mapeo`);
+    for (const m of h.matchAll(/(?:src|href)="(\/assets\/landing\/[^"?#]+)/g)) assert.ok(fs.existsSync(path.join(REPO, m[1])), `${l} mapeo: falta ${m[1]}`);
+    assert.ok(pagina(l).includes(`href="${T[l].pm.path}"`), `${l}: la portada no enlaza su página de mapeo`);
+  }
+});
+
+test('la portada tiene el selector Dron · Terrestre con las dos capturas', () => {
+  for (const l of LANGS) {
+    const h = pagina(l);
+    assert.match(h, /role="tablist"/); assert.match(h, /data-tab="terrestre"/);
+    assert.match(h, new RegExp(`hoy-${l}-terrestre\\.webp`));
+    assert.equal((h.match(/class="rig[ "]/g) || []).length, 2, `${l}: deberían ser 2 teléfonos`);
+  }
+});
+
 test('la línea de fundador lleva el hueco de la fecha y ningún número', () => {
   for (const l of LANGS) { assert.match(T[l].planes.founder, /\{d\}/); assert.doesNotMatch(T[l].planes.founder.replace('{d}', ''), /\d/); }
 });
