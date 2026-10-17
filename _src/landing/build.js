@@ -44,6 +44,9 @@ if (!fs.existsSync(PRIV)) {
   fs.mkdirSync(path.dirname(PRIV), { recursive: true }); fs.writeFileSync(PRIV, viejo, 'utf8');
   console.log('privacidad/index.html creado (copia de la portada vieja)');
 }
+/* anclas de la política: la portada vieja ERA la política y las tiendas tienen registradas /#es…/#fr y /#eliminar-datos
+   (Play: URL de borrado de datos; App Store Connect: URL de opciones de privacidad) → la portada nueva las redirige todas */
+const PRIV_IDS = [...fs.readFileSync(PRIV, 'utf8').matchAll(/\sid="([a-z][a-z0-9-]*)"/g)].map((m) => m[1]);
 
 /* ── piezas ── */
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -104,7 +107,7 @@ ${alt}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap">
 <link rel="preload" as="image" href="/assets/landing/img/hoy-${l}.webp" type="image/webp">
 <link rel="stylesheet" href="/assets/landing/landing.css?v=${V}">
-${root ? '<script>/* enlaces viejos a la política (antes era la portada): /#es /#en /#pt /#fr */if(/^#(es|en|pt|fr)$/.test(location.hash))location.replace("/privacidad/"+location.hash);</script>' : ''}
+${root ? `<script>/* enlaces viejos a la política (antes era la portada), también las URL de borrado de datos de las tiendas */if(/^#(${PRIV_IDS.join('|')})$/.test(location.hash))location.replace("/privacidad/"+location.hash);</script>` : ''}
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 <script>window.SC=${JSON.stringify({ lang: l, founder: t.planes.founder, locale: t.lang, sug })};document.documentElement.classList.add('js');setTimeout(function(){if(!window.SCok)document.documentElement.classList.remove('js')},3500);</script>
 </head>

@@ -68,3 +68,14 @@ test('solo la portada en español redirige los enlaces viejos de la política', 
   const priv = fs.readFileSync(path.join(REPO, 'privacidad', 'index.html'), 'utf8');
   for (const id of ['es', 'en', 'pt', 'fr']) assert.match(priv, new RegExp(`id="${id}"`), `política sin sección ${id}`);
 });
+
+test('la portada redirige TODAS las anclas de la política (las tiendas usan /#eliminar-datos) y ninguna de la landing', () => {
+  const h = pagina('es'), m = h.match(/if\(\/\^#\(([^)]+)\)\$\/\.test\(location\.hash\)\)/);
+  assert.ok(m, 'no encuentro la redirección');
+  const rx = new RegExp(`^#(${m[1]})$`);
+  const priv = fs.readFileSync(path.join(REPO, 'privacidad', 'index.html'), 'utf8');
+  const ids = [...priv.matchAll(/\sid="([^"]+)"/g)].map((x) => x[1]);
+  for (const id of ['eliminar-datos', 'data-deletion', 'excluir-dados', 'suppression-donnees', 'es', 'en', 'pt', 'fr']) assert.ok(ids.includes(id), `la política perdió el ancla ${id}`);
+  for (const id of ids) assert.ok(rx.test('#' + id), `#${id} no redirige a /privacidad/`);
+  for (const [, id] of h.matchAll(/\sid="([^"]+)"/g)) assert.ok(!rx.test('#' + id), `#${id} de la landing se iría a la política`);
+});
