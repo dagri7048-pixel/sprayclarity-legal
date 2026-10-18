@@ -64,6 +64,21 @@ test('las 4 páginas de mapeo existen, se enlazan entre sí y apuntan al Play co
   }
 });
 
+test('el selector Pulverización | Mapeo marca la página en la que estás (y no hay enlace suelto a la otra)', () => {
+  for (const l of LANGS) {
+    const pmFile = path.join(REPO, ...T[l].pm.path.split('/').filter(Boolean), 'index.html');
+    for (const [h, actual] of [[pagina(l), T[l].path], [fs.readFileSync(pmFile, 'utf8'), T[l].pm.path]]) {
+      const navs = [...h.matchAll(/<nav class="modo [^"]*"[^>]*>([\s\S]*?)<\/nav>/g)].map((m) => m[1]);
+      assert.equal(navs.length, 2, `${l} ${actual}: deberían ser 2 selectores (menú y portada)`);
+      for (const n of navs) {
+        const cur = [...n.matchAll(/<a href="([^"]+)" aria-current="page">/g)].map((m) => m[1]);
+        assert.deepEqual(cur, [actual], `${l} ${actual}: el selector marca ${cur}`);
+      }
+      assert.doesNotMatch(h, /class="ext"/, `${l}: quedó el enlace verde suelto`);
+    }
+  }
+});
+
 test('la portada tiene el selector Dron · Terrestre con las dos capturas', () => {
   for (const l of LANGS) {
     const h = pagina(l);

@@ -96,6 +96,39 @@
     }).observe(heroB);
   } else if (nav) nav.classList.add('past');
 
+  /* atajos (#como, #pro, #descargar…): la sección queda CENTRADA bajo el menú si cabe; si es más alta que la pantalla,
+     su contenido empieza justo debajo del menú (antes quedaba el relleno de la sección arriba y el contenido cortado) */
+  var destino = function (sec) {
+    var w = $('.wrap', sec) || sec, r = w.getBoundingClientRect();
+    var top0 = nav ? nav.getBoundingClientRect().height : 68, libre = (window.innerHeight || 800) - top0;
+    var y = (window.pageYOffset || 0) + r.top;
+    return Math.max(0, Math.round(r.height <= libre - 40 ? y - top0 - (libre - r.height) / 2 : y - top0 - 28));
+  };
+  var irA = function (sec, suave) {
+    window.scrollTo({ top: destino(sec), behavior: suave && !reduce ? 'smooth' : 'auto' });
+    /* al terminar, se vuelve a medir: si algo cambió de tamaño durante el camino (una imagen, una fuente), se corrige */
+    var hecho = false, revisar = function () {
+      if (hecho) return; hecho = true; window.removeEventListener('scrollend', revisar);
+      var dd = destino(sec); if (Math.abs(dd - (window.pageYOffset || 0)) > 6) window.scrollTo({ top: dd, behavior: reduce ? 'auto' : 'smooth' });
+    };
+    window.addEventListener('scrollend', revisar); setTimeout(revisar, suave && !reduce ? 1200 : 80);
+  };
+  $$('a[href^="#"]').forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    if (!id || id === 'main') return;
+    a.addEventListener('click', function (e) {
+      var sec = d.getElementById(id);
+      if (!sec || sec.tagName !== 'SECTION') return;
+      e.preventDefault(); irA(sec, true);
+      try { history.pushState(null, '', '#' + id); } catch (er) {}
+    });
+  });
+  /* si se entra con #sección en la dirección, el mismo encuadre */
+  window.addEventListener('load', function () {
+    var h = location.hash.slice(1), sec = h && d.getElementById(h);
+    if (sec && sec.tagName === 'SECTION') setTimeout(function () { irA(sec, false); }, 60);
+  });
+
   /* menú: marca la sección que estás leyendo (las que no están en el menú lo dejan sin marca) */
   var links = $$('.links a'), heroSec = $('.hero');
   var secs = links.map(function (a) { return d.getElementById(a.hash.slice(1)); });
@@ -114,23 +147,21 @@
      Cambia solo cada 6,5 s mientras se ve, hasta que la persona toca una pestaña; con movimiento reducido, sin giro ni cambio solo. */
   var tabs = $$('.mtabs [role=tab]'), rigsBox = $('.rigs');
   if (tabs.length && rigsBox) {
-    var cur = 'dron', busy = false, auto = null, tocado = false;
+    var cur = 'dron', auto = null, tocado = false;
     var rigOf = function (m) { return $('.rig[data-m="' + m + '"]', rigsBox); };
-    var replayGauge = function (r) { var g = $('.gauge', r); if (!g) return; g.classList.remove('go'); void g.getBoundingClientRect(); setTimeout(function () { g.classList.add('go'); }, 420); };
+    var replayGauge = function (r) { var g = $('.gauge', r); if (!g) return; g.classList.remove('go'); void g.getBoundingClientRect(); setTimeout(function () { g.classList.add('go'); }, 380); };
+    /* la pestaña marcada y el teléfono cambian en el MISMO instante (sin temporizadores en medio): el nuevo entra girando */
     var mostrar = function (m) {
-      if (m === cur || busy) return;
+      if (m === cur) return;
       var a = rigOf(cur), b = rigOf(m); if (!a || !b) return;
-      tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.getAttribute('data-tab') === m)); });
       cur = m;
-      if (!animOk) { a.classList.remove('on', 'play'); a.setAttribute('aria-hidden', 'true'); b.classList.add('on', 'play'); b.removeAttribute('aria-hidden'); return; }
-      busy = true; rigsBox.classList.add('flipping'); a.classList.add('flip-out');
-      setTimeout(function () {
-        a.classList.remove('on', 'play', 'flip-out', 'again'); a.setAttribute('aria-hidden', 'true');
-        b.classList.add('flip-pre', 'on'); b.removeAttribute('aria-hidden'); void b.getBoundingClientRect();
-        b.classList.remove('flip-pre'); b.classList.add('flip-in', 'play', 'again'); replayGauge(b);
-        setTimeout(function () { b.classList.remove('flip-in'); rigsBox.classList.remove('flipping'); busy = false; }, 660);
-      }, 370);
+      tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.getAttribute('data-tab') === m)); });
+      a.classList.remove('on', 'play', 'again', 'flip-in'); a.setAttribute('aria-hidden', 'true');
+      b.classList.remove('flip-in'); void b.getBoundingClientRect();
+      b.classList.add('on', 'play', 'again'); b.removeAttribute('aria-hidden');
+      if (animOk) { b.classList.add('flip-in'); replayGauge(b); }
     };
+    $$('.rig', rigsBox).forEach(function (r) { r.addEventListener('animationend', function (e) { if (e.animationName === 'flipin') r.classList.remove('flip-in'); }); });
     var parar = function () { if (auto) { clearInterval(auto); auto = null; } };
     var arrancar = function () { if (auto || tocado || !animOk) return; auto = setInterval(function () { if (!d.hidden) mostrar(cur === 'dron' ? 'terrestre' : 'dron'); }, 6500); };
     tabs.forEach(function (t) { t.addEventListener('click', function () { tocado = true; parar(); mostrar(t.getAttribute('data-tab')); }); });

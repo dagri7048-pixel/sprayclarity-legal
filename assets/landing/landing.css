@@ -39,8 +39,12 @@ main,footer{overflow-x:hidden;overflow-x:clip}
 .links{display:flex;gap:2px;margin-inline:auto}
 .links a{color:var(--soft);text-decoration:none;font-weight:500;font-size:.95rem;padding:9px 12px;border-radius:10px;transition:color .2s,background-color .2s}
 .links a:hover,.links a.on{color:var(--ink);background:rgba(234,241,232,.06)}
-.links a.ext{color:var(--go)}
-.links a.ext::after{content:'↗';margin-left:4px;font-size:.8em}
+/* Pulverización | Mapeo: la página actual va marcada (verde con borde); la otra, en gris */
+.modo{display:inline-flex;align-items:center;gap:2px;flex:none;padding:3px;border-radius:999px;border:1px solid var(--line);background:rgba(19,33,25,.7)}
+.modo a{padding:7px 13px;border-radius:999px;color:var(--soft);text-decoration:none;font:600 .86rem/1 var(--fb);white-space:nowrap;transition:color .2s,background-color .2s}
+.modo a:hover{color:var(--ink);background:rgba(234,241,232,.05)}
+.modo a[aria-current]{color:var(--go);background:rgba(52,199,106,.15);box-shadow:inset 0 0 0 1px rgba(52,199,106,.55)}
+.m-hero{display:none}
 .navr{display:flex;align-items:center;gap:10px;margin-left:auto}
 .langs{position:relative}
 .langs summary{display:flex;align-items:center;gap:7px;list-style:none;cursor:pointer;color:var(--soft);font:500 .82rem/1 var(--fm);letter-spacing:.08em;padding:10px 12px;border:1px solid var(--line);border-radius:10px;transition:color .2s,border-color .2s}
@@ -55,7 +59,8 @@ main,footer{overflow-x:hidden;overflow-x:clip}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;background:var(--go);color:var(--dark);font:700 1rem/1 var(--fd);text-decoration:none;padding:15px 22px;border-radius:12px;box-shadow:0 10px 26px -10px rgba(52,199,106,.6),inset 0 1px 0 rgba(255,255,255,.28);transition:transform .2s var(--ease),box-shadow .2s,background-color .2s}
 .btn:hover{background:#3FD677;transform:translateY(-1px);box-shadow:0 14px 32px -10px rgba(52,199,106,.72),inset 0 1px 0 rgba(255,255,255,.3)}
 .btn.sm{padding:11px 15px;font-size:.92rem;border-radius:10px}
-@media (max-width:1100px){.links{display:none}}
+@media (max-width:1240px){.links{display:none}}
+@media (max-width:720px){.m-nav{display:none}.m-hero{display:inline-flex;margin-bottom:18px}}
 @media (max-width:560px){.btn.sm{padding:10px 13px;font-size:.88rem}.nav .btn{display:none}.nav.past .btn{display:inline-flex}.nav.past .langs{display:none}}
 @media (max-width:380px){.nav.past .brand span{display:none}}
 
@@ -123,12 +128,8 @@ h1 em,h2 em{font-style:normal;color:var(--go)}
 .mtabs button:hover{color:var(--ink)}
 .mtabs button[aria-selected=true]{background:var(--go);color:var(--dark)}
 .rigs{display:grid;perspective:1500px;perspective-origin:50% 40%}
-@property --flip{syntax:'<angle>';inherits:false;initial-value:0deg}
-.rig{grid-area:1/1;position:relative;transform-style:preserve-3d;transform:rotateX(var(--rx,7deg)) rotateY(calc(var(--ry,-16deg) + var(--flip,0deg))) rotateZ(1.5deg)}
+.rig{grid-area:1/1;position:relative;transform-style:preserve-3d;transform:rotateX(var(--rx,7deg)) rotateY(var(--ry,-16deg)) rotateZ(1.5deg)}
 .rig:not(.on){visibility:hidden}
-.rig.flip-out{--flip:92deg;transition:--flip .36s cubic-bezier(.55,0,.8,.3)}
-.rig.flip-pre{--flip:-92deg;transition:none}
-.rig.flip-in{transition:--flip .62s cubic-bezier(.2,.9,.25,1.12)}
 .device{position:relative;margin:0;width:var(--dw);padding:9px;border-radius:46px;background:linear-gradient(150deg,#2A3C31,#0C1510 55%,#18241D);box-shadow:0 0 0 1.5px #34503F,0 60px 100px -40px rgba(0,0,0,.85),0 40px 90px -50px rgba(52,199,106,.5);transform-style:preserve-3d}
 .device::before{content:'';position:absolute;inset:4px;border-radius:44px;background:#050A07;transform:translateZ(-18px)}
 .device img{position:relative;display:block;width:100%;border-radius:37px}
@@ -159,7 +160,8 @@ h1 em,h2 em{font-style:normal;color:var(--go)}
 .proof-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
 .pf{padding:28px 16px 26px;text-align:center}
 .pf+.pf{border-left:1px solid var(--line2)}
-.pf b{display:block;font:800 clamp(2rem,1.4rem + 2vw,3rem)/1 var(--fd);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+/* alto fijo: cuando el contador arranca, el número se parte en <span>+<i> y antes la franja crecía 28 px (movía los atajos) */
+.pf b{display:flex;align-items:center;justify-content:center;height:1em;font:800 clamp(2rem,1.4rem + 2vw,3rem)/1 var(--fd);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .pf b i{font-style:normal;color:var(--go)}
 .pf b i.st{color:var(--amb)}
 .pf span{display:block;margin-top:8px;font-size:.9rem;line-height:1.35;color:var(--dim)}
@@ -446,7 +448,10 @@ h1 em,h2 em{font-style:normal;color:var(--go)}
   .plan.pro::before{animation:spin 7s linear infinite}
   .rig{transition:none}
 }
-@media (prefers-reduced-motion:no-preference) and (hover:none){.rig{animation:sway 9s ease-in-out infinite alternate}.rigs.flipping .rig{animation:none}}
+@media (prefers-reduced-motion:no-preference) and (hover:none){.rig{animation:sway 9s ease-in-out infinite alternate}}
+/* al cambiar de método el teléfono nuevo entra girando (rotate se suma al transform de la inclinación) */
+@media (prefers-reduced-motion:no-preference){.rig.flip-in{animation:flipin .75s cubic-bezier(.2,.9,.25,1.08)}}
+@keyframes flipin{from{rotate:y -90deg}to{rotate:y 0deg}}
 @keyframes drift{to{transform:translate3d(-4%,3%,0) scale(1.06)}}
 @keyframes fly{from{transform:translateY(0)}to{transform:translateY(60px)}}
 @keyframes lift{from{opacity:0;transform:translate3d(calc(var(--z) * -.276),calc(var(--z) * -.122),0)}35%{opacity:1}to{opacity:1;transform:translate3d(0,0,var(--z))}}

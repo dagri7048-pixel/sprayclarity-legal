@@ -16,7 +16,7 @@ const INS = path.join(DC, 'campana-pro', 'assets', 'insignias');
 const FOTOS = path.join(DC, 'campana-pro', 'carrusel-v2', 'fotos'); /* cuadros aprobados de los clips IA */
 const FOTOS2 = path.join(DC, 'campana-pro', 'landing-fotos');       /* imágenes IA de la landing (nano-banana-pro 2K) */
 const A = path.join(REPO, 'assets', 'landing'), IMG = path.join(A, 'img');
-const SITE = 'https://sprayclarity.com', V = '4';
+const SITE = 'https://sprayclarity.com', V = '6';
 const LANGS = ['es', 'pt', 'en', 'fr'];
 const REHACER = process.argv.includes('--img');
 fs.mkdirSync(path.join(IMG, 'badges'), { recursive: true });
@@ -103,6 +103,9 @@ const rig = (m, dd, img, altTxt, on, prio, oy) => `<div class="rig${on ? ' on pl
         ${dd.f.map((f, i) => `<div class="chip c-f c-f${i + 1}"><span class="mono">${f[0]}</span><b>${f[1]}<small> ${f[2]}</small></b></div>`).join('')}
       </div>`;
 const NOMBRE = { es: 'Español', pt: 'Português', en: 'English', fr: 'Français' };
+/* selector de página Pulverización | Mapeo: marca SIEMPRE la página en la que estás (antes había un solo enlace verde
+   con el nombre de la OTRA página y parecía la pestaña activa: pedido del usuario 2026-10-17) */
+const modo = (l, pm, cls) => { const t = T[l]; return `<nav class="modo ${cls}" aria-label="${esc(t.nav.modoL)}"><a href="${t.path}"${pm ? '' : ' aria-current="page"'}>${t.pm.nav.spray}</a><a href="${t.pm.path}"${pm ? ' aria-current="page"' : ''}>${t.nav.mapeo}</a></nav>`; };
 
 /* cabecera HTML común; `pag` = 'main' | 'mapeo' */
 function head(l, pag) {
@@ -141,13 +144,14 @@ function header(l, pag) {
   const t = T[l], pm = pag === 'mapeo', home = pm ? t.pm.path : t.path, N = pm ? t.pm.nav : t.nav;
   const langMenu = LANGS.map((x) => `<a href="${pm ? T[x].pm.path : T[x].path}" hreflang="${T[x].lang}" lang="${T[x].lang}"${x === l ? ' aria-current="page"' : ''}>${NOMBRE[x]}</a>`).join('');
   const links = pm
-    ? `<a href="#como">${N.como}</a><a href="#factores">${N.factores}</a><a href="#pro">${N.pro}</a><a href="#preguntas">${N.faq}</a><a href="${t.path}" class="ext">${N.spray}</a>`
-    : `<a href="#como">${N.como}</a><a href="#mapa">${N.mapa}</a><a href="#alertas">${N.alertas}</a><a href="#pro">${N.pro}</a><a href="#preguntas">${N.faq}</a><a href="${t.pm.path}" class="ext">${N.mapeo}</a>`;
+    ? `<a href="#como">${N.como}</a><a href="#factores">${N.factores}</a><a href="#pro">${N.pro}</a><a href="#preguntas">${N.faq}</a>`
+    : `<a href="#como">${N.como}</a><a href="#mapa">${N.mapa}</a><a href="#alertas">${N.alertas}</a><a href="#pro">${N.pro}</a><a href="#preguntas">${N.faq}</a>`;
   return `
 <a class="skip" href="#main">${t.nav.skip}</a>
 <header class="nav" data-nav>
   <div class="wrap navin">
     <a class="brand" href="${home}" aria-label="SprayClarity"><img src="/assets/landing/img/icon-96.webp" width="36" height="36" alt=""><span>Spray<b>Clarity</b></span></a>
+    ${modo(l, pm, 'm-nav')}
     <nav class="links">${links}</nav>
     <div class="navr">
       <details class="langs"><summary aria-label="${t.foot.lang}">${l.toUpperCase()}</summary><div class="langs-m">${langMenu}</div></details>
@@ -260,6 +264,7 @@ function pagina(l) {
   <div class="field" aria-hidden="true"><i></i></div>
   <div class="wrap hero-g">
     <div class="hero-t">
+      ${modo(l, false, 'm-hero')}
       <p class="eyebrow" data-anim>${t.hero.eye}</p>
       <h1 data-anim style="--i:1">${t.hero.h1}</h1>
       <p class="lead" data-anim style="--i:2">${t.hero.sub}</p>
@@ -345,6 +350,7 @@ function paginaMapeo(l) {
   <div class="field" aria-hidden="true"><i></i></div>
   <div class="wrap hero-g">
     <div class="hero-t">
+      ${modo(l, true, 'm-hero')}
       <p class="eyebrow" data-anim>${P.hero.eye}</p>
       <h1 data-anim style="--i:1">${P.hero.h1}</h1>
       <p class="lead" data-anim style="--i:2">${P.hero.sub}</p>

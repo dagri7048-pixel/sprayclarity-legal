@@ -15,7 +15,7 @@ module.exports = {
       ogTitle: 'Que no llueva no significa que puedas aplicar',
       ogDesc: 'Un veredicto por hora para dron, pulverizador terrestre, mochila y más. Gratis, sin crear cuenta.',
     },
-    nav: { como: 'Cómo funciona', mapa: 'Mapa', alertas: 'Alertas', pro: 'Pro', faq: 'Preguntas', mapeo: 'Mapeo', cta: 'Descargar gratis', skip: 'Saltar al contenido' },
+    nav: { como: 'Cómo funciona', mapa: 'Mapa', alertas: 'Alertas', pro: 'Pro', faq: 'Preguntas', mapeo: 'Mapeo', modoL: 'Pulverización o mapeo', cta: 'Descargar gratis', skip: 'Saltar al contenido' },
     hero: {
       eye: 'Para dron, pulverizador terrestre, mochila y más',
       h1: 'Que no llueva no significa que <em>puedas aplicar.</em>',
@@ -209,7 +209,7 @@ module.exports = {
       ogTitle: 'Não chover não significa que dá para aplicar',
       ogDesc: 'Um veredito por hora para drone, pulverizador terrestre, costal e mais. Grátis, sem criar conta.',
     },
-    nav: { como: 'Como funciona', mapa: 'Mapa', alertas: 'Alertas', pro: 'Pro', faq: 'Perguntas', mapeo: 'Mapeamento', cta: 'Baixar grátis', skip: 'Pular para o conteúdo' },
+    nav: { como: 'Como funciona', mapa: 'Mapa', alertas: 'Alertas', pro: 'Pro', faq: 'Perguntas', mapeo: 'Mapeamento', modoL: 'Pulverização ou mapeamento', cta: 'Baixar grátis', skip: 'Pular para o conteúdo' },
     hero: {
       eye: 'Para drone, pulverizador terrestre, costal e mais',
       h1: 'Não chover não significa que <em>dá para aplicar.</em>',
@@ -403,7 +403,7 @@ module.exports = {
       ogTitle: 'A dry day isn’t always a spray day',
       ogDesc: 'An hour-by-hour verdict for drones, ground rigs, backpack sprayers and more. Free, no account needed.',
     },
-    nav: { como: 'How it works', mapa: 'Map', alertas: 'Alerts', pro: 'Pro', faq: 'FAQ', mapeo: 'Mapping', cta: 'Get it free', skip: 'Skip to content' },
+    nav: { como: 'How it works', mapa: 'Map', alertas: 'Alerts', pro: 'Pro', faq: 'FAQ', mapeo: 'Mapping', modoL: 'Spraying or mapping', cta: 'Get it free', skip: 'Skip to content' },
     hero: {
       eye: 'For drones, ground rigs, backpack sprayers and more',
       h1: 'A dry day isn’t always <em>a spray day.</em>',
@@ -597,7 +597,7 @@ module.exports = {
       ogTitle: 'Un jour sans pluie n’est pas toujours un jour pour traiter',
       ogDesc: 'Un verdict heure par heure pour drone, pulvérisateur, pulvérisateur à dos et plus. Gratuit, sans compte.',
     },
-    nav: { como: 'Fonctionnement', mapa: 'Carte', alertas: 'Alertes', pro: 'Pro', faq: 'Questions', mapeo: 'Cartographie', cta: 'Télécharger', skip: 'Aller au contenu' },
+    nav: { como: 'Fonctionnement', mapa: 'Carte', alertas: 'Alertes', pro: 'Pro', faq: 'Questions', mapeo: 'Cartographie', modoL: 'Pulvérisation ou cartographie', cta: 'Télécharger', skip: 'Aller au contenu' },
     hero: {
       eye: 'Pour drone, pulvérisateur, pulvérisateur à dos et plus',
       h1: 'Un jour sans pluie n’est pas toujours <em>un jour pour traiter.</em>',
