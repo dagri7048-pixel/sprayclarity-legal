@@ -22,5 +22,5 @@
     "ESPERA4CXK": { "tag": "espera90", "name": "Lista de espera" },
     "ESPERA3C4C": { "tag": "espera90", "name": "Lista de espera" }
   },
-  "latest": { "android": "1.9.4", "ios": "1.9.1" }
+  "latest": { "android": "1.9.4", "ios": "1.9.3" }
 }
