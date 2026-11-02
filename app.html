@@ -22,15 +22,27 @@
     var q=new URLSearchParams(location.search);
     var via=((q.get('via')||q.get('utm_source')||'web').replace(/[^a-z0-9_-]/gi,'').slice(0,40))||'web';
     var PLAY='https://play.google.com/store/apps/details?id=com.planoalto.sprayclarity&referrer='+encodeURIComponent('utm_source='+via);
-    var IOS='https://apps.apple.com/app/id6804949973';
+    /* 1.9.5 (2026-11-01): enlace de campaña de App Store — ct = origen (via); pt = Provider token de App Store Connect
+       (Trends → Campaigns), pendiente de que lo pase el usuario. Sin pt, Apple no atribuye; ct y mt no estorban. */
+    var APPLE_PT='';
+    var IOS='https://apps.apple.com/app/id6804949973?mt=8&ct='+encodeURIComponent(via)+(APPLE_PT?'&pt='+encodeURIComponent(APPLE_PT):'');
     window.SC_LINKS={play:PLAY,ios:IOS,via:via};
-    document.addEventListener('DOMContentLoaded',function(){ /* en la página, la insignia de Play lleva el mismo origen */
-      try{document.querySelectorAll('a[href*="play.google.com"]').forEach(function(a){a.href=PLAY;});}catch(e){}
-    });
-    if(q.get('noredir')==='1')return;
     var ua=navigator.userAgent||'';
     var isIOS=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1); /* iPadOS se presenta como Mac */
     var isAndroid=/Android/i.test(ua);
+    var plat=isIOS?'ios':(isAndroid?'android':'otro'),redir=(q.get('noredir')==='1')?'no':(isIOS?'appstore':(isAndroid?'play':'pagina'));
+    /* 1.9.5: cuenta la apertura del enlace en el mismo proyecto de PostHog que la app, sin cookies ni identificador persistente
+       (id aleatorio por visita, sin perfil de persona). Cierra el hueco entre "reporte compartido" (la app) e "instalación
+       atribuida" (Install Referrer). keepalive: la petición sobrevive a la redirección. */
+    try{
+      var rid='web-'+Math.random().toString(36).slice(2,12)+Date.now().toString(36);
+      fetch('https://us.i.posthog.com/i/v0/e/',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:'phc_yUbnmZVEWeoh5z5EiCa9YhdCkiCcrFXJVthh9KwEEVzs',event:'landing_app_open',distinct_id:rid,properties:{via:via,platform:plat,redirect:redir,lang:(navigator.language||'').slice(0,2),$host:'sprayclarity.com',$current_url:location.origin+location.pathname,$lib:'sprayclarity-web',$process_person_profile:false}})}).catch(function(){});
+    }catch(e){}
+    document.addEventListener('DOMContentLoaded',function(){ /* en la página, las insignias llevan el mismo origen */
+      try{document.querySelectorAll('a[href*="play.google.com"]').forEach(function(a){a.href=PLAY;});}catch(e){}
+      try{document.querySelectorAll('a[href*="apps.apple.com"]').forEach(function(a){a.href=IOS;});}catch(e){}
+    });
+    if(q.get('noredir')==='1')return;
     if(isIOS){location.replace(IOS);return;}
     if(isAndroid){location.replace(PLAY);return;}
   }catch(e){}
