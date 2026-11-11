@@ -62,7 +62,7 @@
 <ul>
   <li>La app registra eventos de uso anónimos (por ejemplo: apertura de la app, activación de avisos, uso de funciones) para entender qué funciona y mejorar el producto.</li>
   <li>Estos eventos <b>no incluyen</b> tu número de teléfono ni tus coordenadas precisas. La respuesta del formulario Pro se registra en analítica solo como rango de precio elegido, nunca con tu número.</li>
-  <li>Actualmente estos eventos se guardan localmente en tu dispositivo. Podemos utilizar el servicio de analítica <b>PostHog</b> para procesarlos de forma agregada; en ese caso se asocia a un identificador aleatorio de instalación (no a tu identidad).</li>
+  <li>Usamos el servicio de analítica <b>PostHog</b> para procesar estos eventos de forma agregada. Se asocian a un identificador aleatorio de instalación (no a tu identidad).</li>
   <li><b>Consentimiento en Europa (RGPD):</b> si usas la app desde una zona horaria europea, la analítica permanece <b>desactivada</b> hasta que la aceptes en el aviso que muestra la app. Puedes elegir «Solo esencial» y la app funciona completa, sin analítica. Para cambiar tu decisión, borra los datos de la app en los ajustes de Android. Bases legales: ejecución del servicio (pronóstico solicitado) y consentimiento (art. 6.1.a RGPD) para la analítica. Puedes ejercer tus derechos de acceso, rectificación, supresión y portabilidad escribiendo a <a href="mailto:sprayclarity@gmail.com">sprayclarity@gmail.com</a>.</li>
   <li>En Europa, tu elección se aplica a la analítica de uso de la app. Los eventos de suscripción se registran en todos los casos, porque son parte de la administración de las ventas (interés legítimo, art. 6.1.f RGPD).</li>
   <li><b>Atribución de anuncios (Meta):</b> fuera de Europa, la app usa el SDK de Meta (Facebook) para medir si una instalación provino de un anuncio y optimizar nuestras campañas. Se comparte con Meta el identificador publicitario del dispositivo y eventos básicos (instalación, apertura de la app). <b>En Europa este componente está siempre desactivado.</b> Puedes restablecer o eliminar tu identificador publicitario en Ajustes de Android → Privacidad → Anuncios.</li>
@@ -99,9 +99,9 @@
   <tr><td>Esri / ArcGIS Online</td><td>Imágenes satelitales del mapa</td><td>Teselas del área visible del mapa; IP</td></tr>
   <tr><td>unpkg (CDN) y Google Fonts</td><td>Librería del mapa (Leaflet) y tipografías</td><td>Solicitud del recurso; IP</td></tr>
   <tr><td>Proveedor de formularios (p. ej., Google Forms/Formspree)</td><td>Recibir tu solicitud voluntaria de aviso de Pro</td><td>Número de WhatsApp y preferencia de precio, solo si los envías</td></tr>
-  <tr><td>PostHog (analítica, si está activa)</td><td>Métricas de uso agregadas</td><td>Eventos de uso anónimos e identificador aleatorio de instalación</td></tr>
+  <tr><td>PostHog (analítica)</td><td>Métricas de uso agregadas y registro de ventas</td><td>Eventos de uso anónimos (si la analítica está activa), eventos de suscripción e identificador aleatorio de instalación</td></tr>
   <tr><td>Meta (atribución de anuncios, solo fuera de Europa)</td><td>Medir la efectividad de campañas</td><td>Identificador publicitario del dispositivo y eventos de instalación/apertura</td></tr>
-  <tr><td>RevenueCat (suscripciones)</td><td>Verificar y activar la suscripción Pro</td><td>Comprobante de compra de la tienda, identificador aleatorio de instalación y datos técnicos del dispositivo</td></tr>
+  <tr><td>RevenueCat (suscripciones)</td><td>Verificar y activar la suscripción Pro; enviar los eventos de suscripción a la analítica</td><td>Comprobante de compra de la tienda, identificador aleatorio de instalación (y el de la analítica, si está activa) y datos técnicos del dispositivo</td></tr>
 </table>
 <p class="meta">Cada proveedor trata los datos conforme a su propia política de privacidad.</p>
 
@@ -155,7 +155,7 @@
 <ul>
   <li>The app records anonymous usage events (e.g., app open, alert enabled, feature taps) to understand what works and improve the product.</li>
   <li>These events <b>never include</b> your phone number or your precise coordinates. Your Pro-form answer is logged in analytics only as the chosen price bucket, never with your number.</li>
-  <li>Events are currently stored locally on your device. We may use <b>PostHog</b> to process them in aggregate; in that case they are tied to a random installation identifier (not to your identity).</li>
+  <li>We use the analytics service <b>PostHog</b> to process these events in aggregate. They are tied to a random installation identifier (not to your identity).</li>
   <li><b>Consent in Europe (GDPR):</b> if you use the app from a European time zone, analytics stays <b>off</b> until you accept it in the in-app notice. You can choose "Essential only" and the app works fully, with no analytics. To change your decision, clear the app's data in Android settings. Legal bases: performance of the service (the forecast you request) and consent (Art. 6(1)(a) GDPR) for analytics. You may exercise your rights of access, rectification, erasure and portability by writing to <a href="mailto:sprayclarity@gmail.com">sprayclarity@gmail.com</a>.</li>
   <li>In Europe, your choice applies to the app's usage analytics. Subscription events are recorded in all cases, because they are part of managing our sales (legitimate interest, Art. 6(1)(f) GDPR).</li>
   <li><b>Ad attribution (Meta):</b> outside Europe, the app uses the Meta (Facebook) SDK to measure whether an install came from an ad and to optimize our campaigns. The device's advertising ID and basic events (install, app open) are shared with Meta. <b>In Europe this component is always off.</b> You can reset or delete your advertising ID in Android Settings → Privacy → Ads.</li>
@@ -192,9 +192,9 @@
   <tr><td>Esri / ArcGIS Online</td><td>Satellite map imagery</td><td>Map tiles of the visible area; IP</td></tr>
   <tr><td>unpkg (CDN) and Google Fonts</td><td>Map library (Leaflet) and fonts</td><td>Resource request; IP</td></tr>
   <tr><td>Forms provider (e.g., Google Forms/Formspree)</td><td>Receive your voluntary Pro-launch request</td><td>WhatsApp number and price preference, only if you submit them</td></tr>
-  <tr><td>PostHog (analytics, when active)</td><td>Aggregated usage metrics</td><td>Anonymous usage events and a random installation identifier</td></tr>
+  <tr><td>PostHog (analytics)</td><td>Aggregated usage metrics and sales records</td><td>Anonymous usage events (when analytics is active), subscription events and a random installation identifier</td></tr>
   <tr><td>Meta (ad attribution, outside Europe only)</td><td>Measuring campaign effectiveness</td><td>Device advertising ID and install/open events</td></tr>
-  <tr><td>RevenueCat (subscriptions)</td><td>Verifying and activating the Pro subscription</td><td>Store purchase receipt, random installation identifier and technical device data</td></tr>
+  <tr><td>RevenueCat (subscriptions)</td><td>Verifying and activating the Pro subscription; sending subscription events to analytics</td><td>Store purchase receipt, random installation identifier (and the analytics one, when active) and technical device data</td></tr>
 </table>
 <p class="meta">Each provider processes data under its own privacy policy.</p>
 
@@ -248,7 +248,7 @@
 <ul>
   <li>O app registra eventos de uso anônimos (por exemplo: abertura do app, ativação de avisos, uso de funções) para entender o que funciona e melhorar o produto.</li>
   <li>Esses eventos <b>nunca incluem</b> seu número de telefone nem suas coordenadas precisas. A resposta do formulário Pro entra na analítica apenas como faixa de preço escolhida, nunca com seu número.</li>
-  <li>Atualmente esses eventos ficam no seu dispositivo. Podemos usar o serviço <b>PostHog</b> para processá-los de forma agregada; nesse caso ficam associados a um identificador aleatório de instalação (não à sua identidade).</li>
+  <li>Usamos o serviço de analítica <b>PostHog</b> para processar esses eventos de forma agregada. Eles ficam associados a um identificador aleatório de instalação (não à sua identidade).</li>
   <li><b>Consentimento na Europa (RGPD):</b> se você usa o app a partir de um fuso horário europeu, a analítica permanece <b>desativada</b> até você aceitá-la no aviso do app. Você pode escolher «Só o essencial» e o app funciona por completo, sem analítica. Para mudar sua decisão, limpe os dados do app nas configurações do Android. Bases legais: execução do serviço (a previsão que você solicita) e consentimento (art. 6(1)(a) RGPD) para a analítica — mesmos princípios da LGPD brasileira. Você pode exercer seus direitos de acesso, correção, exclusão e portabilidade escrevendo para <a href="mailto:sprayclarity@gmail.com">sprayclarity@gmail.com</a>.</li>
   <li>Na Europa, a sua escolha se aplica à analítica de uso do app. Os eventos de assinatura são registrados em todos os casos, porque fazem parte da administração das vendas (interesse legítimo, art. 6(1)(f) RGPD).</li>
   <li><b>Atribuição de anúncios (Meta):</b> fora da Europa, o app usa o SDK da Meta (Facebook) para medir se uma instalação veio de um anúncio e otimizar nossas campanhas. São compartilhados com a Meta o identificador de publicidade do dispositivo e eventos básicos (instalação, abertura do app). <b>Na Europa este componente fica sempre desativado.</b> Você pode redefinir ou excluir seu identificador de publicidade em Configurações do Android → Privacidade → Anúncios.</li>
@@ -285,9 +285,9 @@
   <tr><td>Esri / ArcGIS Online</td><td>Imagens de satélite do mapa</td><td>Blocos do mapa da área visível; IP</td></tr>
   <tr><td>unpkg (CDN) e Google Fonts</td><td>Biblioteca do mapa (Leaflet) e fontes</td><td>Solicitação do recurso; IP</td></tr>
   <tr><td>Provedor de formulários (p. ex., Formspree/Google Forms)</td><td>Receber seu pedido voluntário de aviso do Pro</td><td>Número de WhatsApp e preferência de preço, apenas se você enviar</td></tr>
-  <tr><td>PostHog (analítica, quando ativa)</td><td>Métricas de uso agregadas</td><td>Eventos de uso anônimos e identificador aleatório de instalação</td></tr>
+  <tr><td>PostHog (analítica)</td><td>Métricas de uso agregadas e registro de vendas</td><td>Eventos de uso anônimos (quando a analítica está ativa), eventos de assinatura e identificador aleatório de instalação</td></tr>
   <tr><td>Meta (atribuição de anúncios, só fora da Europa)</td><td>Medir a eficácia de campanhas</td><td>Identificador de publicidade do dispositivo e eventos de instalação/abertura</td></tr>
-  <tr><td>RevenueCat (assinaturas)</td><td>Verificar e ativar a assinatura Pro</td><td>Comprovante de compra da loja, identificador aleatório de instalação e dados técnicos do aparelho</td></tr>
+  <tr><td>RevenueCat (assinaturas)</td><td>Verificar e ativar a assinatura Pro; enviar os eventos de assinatura para a analítica</td><td>Comprovante de compra da loja, identificador aleatório de instalação (e o da analítica, quando ativa) e dados técnicos do aparelho</td></tr>
 </table>
 <p class="meta">Cada provedor trata os dados conforme sua própria política de privacidade.</p>
 
@@ -341,7 +341,7 @@
 <ul>
   <li>L'application enregistre des événements d'usage anonymes (ouverture de l'app, activation d'alertes, utilisation des fonctions) pour comprendre ce qui fonctionne et améliorer le produit.</li>
   <li>Ces événements n'incluent <b>jamais</b> votre numéro de téléphone ni vos coordonnées précises. La réponse au formulaire Pro n'est enregistrée en analyse que comme tranche de prix choisie, jamais avec votre numéro.</li>
-  <li>Ces événements sont actuellement stockés sur votre appareil. Nous pouvons utiliser le service <b>PostHog</b> pour les traiter de façon agrégée ; ils sont alors liés à un identifiant d'installation aléatoire (pas à votre identité).</li>
+  <li>Nous utilisons le service d'analyse <b>PostHog</b> pour traiter ces événements de façon agrégée. Ils sont liés à un identifiant d'installation aléatoire (pas à votre identité).</li>
   <li><b>Consentement en Europe (RGPD) :</b> si vous utilisez l'application depuis un fuseau horaire européen, l'analyse reste <b>désactivée</b> jusqu'à ce que vous l'acceptiez dans l'avis affiché par l'application. Vous pouvez choisir « Essentiel uniquement » et l'application fonctionne pleinement, sans analyse. Pour changer votre décision, effacez les données de l'application dans les paramètres Android. Bases juridiques : exécution du service (les prévisions demandées) et consentement (art. 6(1)(a) RGPD) pour l'analyse. Vous pouvez exercer vos droits d'accès, de rectification, d'effacement et de portabilité en écrivant à <a href="mailto:sprayclarity@gmail.com">sprayclarity@gmail.com</a>.</li>
   <li>En Europe, votre choix s'applique à l'analyse d'usage de l'application. Les événements d'abonnement sont enregistrés dans tous les cas, car ils font partie de la gestion des ventes (intérêt légitime, art. 6(1)(f) RGPD).</li>
   <li><b>Attribution publicitaire (Meta) :</b> en dehors de l'Europe, l'application utilise le SDK de Meta (Facebook) pour mesurer si une installation provient d'une publicité et optimiser nos campagnes. L'identifiant publicitaire de l'appareil et des événements basiques (installation, ouverture) sont partagés avec Meta. <b>En Europe, ce composant est toujours désactivé.</b> Vous pouvez réinitialiser ou supprimer votre identifiant publicitaire dans Paramètres Android → Confidentialité → Annonces.</li>
@@ -378,9 +378,9 @@
   <tr><td>Esri / ArcGIS Online</td><td>Imagerie satellite de la carte</td><td>Tuiles de la zone visible ; IP</td></tr>
   <tr><td>unpkg (CDN) et Google Fonts</td><td>Bibliothèque de carte (Leaflet) et polices</td><td>Requête de la ressource ; IP</td></tr>
   <tr><td>Prestataire de formulaires (p. ex. Formspree/Google Forms)</td><td>Recevoir votre demande volontaire d'alerte Pro</td><td>Numéro WhatsApp et préférence de prix, uniquement si vous les envoyez</td></tr>
-  <tr><td>PostHog (analyse, si active)</td><td>Statistiques d'usage agrégées</td><td>Événements anonymes et identifiant d'installation aléatoire</td></tr>
+  <tr><td>PostHog (analyse)</td><td>Statistiques d'usage agrégées et registre des ventes</td><td>Événements d'usage anonymes (si l'analyse est active), événements d'abonnement et identifiant d'installation aléatoire</td></tr>
   <tr><td>Meta (attribution publicitaire, hors Europe uniquement)</td><td>Mesurer l'efficacité des campagnes</td><td>Identifiant publicitaire de l'appareil et événements d'installation/ouverture</td></tr>
-  <tr><td>RevenueCat (abonnements)</td><td>Vérifier et activer l'abonnement Pro</td><td>Reçu d'achat de la boutique, identifiant d'installation aléatoire et données techniques de l'appareil</td></tr>
+  <tr><td>RevenueCat (abonnements)</td><td>Vérifier et activer l'abonnement Pro ; envoyer les événements d'abonnement à l'analyse</td><td>Reçu d'achat de la boutique, identifiant d'installation aléatoire (et celui de l'analyse, si elle est active) et données techniques de l'appareil</td></tr>
 </table>
 <p class="meta">Chaque prestataire traite les données selon sa propre politique de confidentialité.</p>
 
