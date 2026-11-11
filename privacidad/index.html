@@ -24,6 +24,19 @@
   table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}
   th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
   th{background:#F3EDDE}
+  /* Teléfonos: la tabla de 3 columnas no cabe (medido a 375 px: hasta 422 px de tabla en 343 disponibles) y partir las
+     palabras para que quepa las deja ilegibles. Cada fila pasa a ser una ficha con sus tres datos en el mismo orden,
+     y los encabezados quedan arriba como leyenda. Desde 521 px sigue la tabla de siempre. */
+  @media (max-width:520px){
+    table,tbody,tr,th,td{display:block}
+    tr{border:1px solid var(--line);border-radius:10px;background:#fff;margin:8px 0;padding:8px 12px}
+    tr:first-child{border:none;background:none;padding:0 2px;margin:10px 0 4px}
+    th{display:inline;border:none;background:none;padding:0;font-size:12.5px;color:var(--soft)}
+    th+th::before{content:" · "}
+    td{border:none;padding:2px 0;overflow-wrap:anywhere}
+    td:first-child{font-weight:700}
+    td:last-child{color:var(--soft)}
+  }
   a{color:var(--go)}
 </style>
 </head>
